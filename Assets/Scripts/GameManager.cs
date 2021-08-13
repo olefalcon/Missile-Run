@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    //Audio Manager
+    public AudioManager am;
     //Object Data
     public GameObject playerPrefab;
     public GameObject missilePrefab;
@@ -137,6 +139,8 @@ public class GameManager : MonoBehaviour
                 break;
         }
         winnerScoreText.text = winnerScore.ToString();
+        //EndRound sound
+        am.PlaySFX("endRound");
     }
     //Function when round is restarting
     public void RestartRound()

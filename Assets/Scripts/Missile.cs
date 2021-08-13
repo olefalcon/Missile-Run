@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Missile : MonoBehaviour
 {
+    public AudioManager am;
     public float startDelay;
     private float startDelayTimer;
     public GameObject gameManager;
@@ -32,6 +33,7 @@ public class Missile : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.Find("GameManager");
+        am = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         GameManager gameManagerScript = gameManager.GetComponent<GameManager>();
         players = gameManagerScript.players;
         int startTarget = Random.Range(0,4);
@@ -127,6 +129,7 @@ public class Missile : MonoBehaviour
             } else
             {
                 collider.gameObject.GetComponent<Player>().Die();
+                am.PlaySFX("playerDeath");
             }
             closestDist = 1000f;
             //Check if last player was killed

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Powerup : MonoBehaviour
 {
+    public AudioManager am;
     public float lifespan;
     public float rotateSpeed;
     public float speedBonus;
@@ -24,6 +25,7 @@ public class Powerup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        am = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         lifespanTimer = lifespan;
         AssignType();
         AssignMat();
@@ -71,9 +73,12 @@ public class Powerup : MonoBehaviour
         {
             case 1: //Powerup 1 = Speed Burst
                 player.GetComponent<Player>().speed = speedBonus;
+                player.GetComponent<Player>().transform.GetChild(4).gameObject.SetActive(true);
+                player.GetComponent<Player>().transform.GetChild(2).gameObject.SetActive(false);
                 player.GetComponent<Player>().powerupTimer = speedTime;
                 player.GetComponent<Player>().hasPowerupEffect = true;
                 player.GetComponent<Player>().powerupType = powerupType;
+                am.PlaySFX("speed");
                 break;
             case 2: //Powerup 2 = Player Swap
                 GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -87,13 +92,13 @@ public class Powerup : MonoBehaviour
                         farthestDist = distToPlayer;
                     }
                 }
-                print(farthestPlayer);
                 if (farthestPlayer != player)
                 {
                     Vector3 farthestPlayerPos = farthestPlayer.transform.position;
                     Vector3 currentPlayerPos = player.transform.position;
                     farthestPlayer.transform.position = currentPlayerPos;
                     player.transform.position = farthestPlayerPos;
+                    am.PlaySFX("playerSwap");
                 }
                 break;
             case 3: //Powerup 3 = Invisible
@@ -102,6 +107,7 @@ public class Powerup : MonoBehaviour
                 player.GetComponent<Player>().hasPowerupEffect = true;
                 player.GetComponent<Player>().powerupType = powerupType;
                 player.GetComponentInChildren<Renderer>().material = invisPlayerMat;
+                am.PlaySFX("ghost");
                 break;
             case 4: //Powerup 4 = Time Glitch
                 player.GetComponent<Player>().glitchPosition = player.transform.position;
@@ -111,6 +117,7 @@ public class Powerup : MonoBehaviour
                 player.GetComponent<Player>().glitchMarksToPlace = 5;
                 GameObject glitchModule = Instantiate(glitchModulePrefab, player.transform.position, Quaternion.identity);
                 player.GetComponent<Player>().glitchModule = glitchModule;
+                am.PlaySFX("glitch");
                 break;
             case 5: //Powerup 5 = Shield
                 player.GetComponent<Player>().hasShield = true;
@@ -118,6 +125,7 @@ public class Powerup : MonoBehaviour
                 player.GetComponent<Player>().hasPowerupEffect = true;
                 player.GetComponent<Player>().powerupType = powerupType;
                 player.transform.GetChild(3).gameObject.SetActive(true);
+                am.PlaySFX("shieldUp");
                 break;
 
         }

@@ -79,6 +79,8 @@ public class Player : MonoBehaviour
                 if (powerupType == 1)
                 {
                     speed = baseSpeed;
+                    transform.GetChild(4).gameObject.SetActive(false);
+                    transform.GetChild(2).gameObject.SetActive(true);
                 } else if (powerupType == 3)
                 {
                     isInvis = false;
