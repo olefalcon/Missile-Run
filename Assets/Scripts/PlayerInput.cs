@@ -6,6 +6,7 @@ public class PlayerInput : MonoBehaviour
 {
     public GameObject gameManager;
     private Settings settings;
+    public int playerIndex;
     private string upInput;
     private string rightInput;
     private string downInput;
@@ -16,10 +17,18 @@ public class PlayerInput : MonoBehaviour
     {
         gameManager = GameObject.Find("GameManager");
         settings = gameManager.GetComponent<Settings>();
-        upInput = settings.upInput;
-        leftInput = settings.leftInput;
-        downInput = settings.downInput;
-        rightInput = settings.rightInput;
+        if (playerIndex == 0) {
+            upInput = settings.upInput;
+            leftInput = settings.leftInput;
+            downInput = settings.downInput;
+            rightInput = settings.rightInput;  
+        } else if (playerIndex == 1) {
+            upInput = settings.p2UpInput;
+            leftInput = settings.p2LeftInput;
+            downInput = settings.p2DownInput;
+            rightInput = settings.p2RightInput;
+        }
+        
     }
 
     // Update is called once per frame

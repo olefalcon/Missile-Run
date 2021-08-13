@@ -579,13 +579,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 282840810}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -3, y: 10, z: 0}
+  m_LocalRotation: {x: 0.6225146, y: 0, z: 0, w: 0.7826082}
+  m_LocalPosition: {x: -3, y: 10, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 77, y: 0, z: 0}
 --- !u!114 &282840816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -716,7 +716,7 @@ PrefabInstance:
     - target: {fileID: 595497019314503452, guid: 136fc7cb505f59549bbee0d9ab486177,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 595497019314503455, guid: 136fc7cb505f59549bbee0d9ab486177,
         type: 3}
@@ -1171,7 +1171,7 @@ PrefabInstance:
     - target: {fileID: 595497019314503452, guid: 136fc7cb505f59549bbee0d9ab486177,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 595497019314503455, guid: 136fc7cb505f59549bbee0d9ab486177,
         type: 3}
@@ -1692,7 +1692,7 @@ PrefabInstance:
     - target: {fileID: 595497019314503452, guid: 136fc7cb505f59549bbee0d9ab486177,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 595497019314503455, guid: 136fc7cb505f59549bbee0d9ab486177,
         type: 3}
@@ -1797,9 +1797,10 @@ MonoBehaviour:
   timeSlowScaling: 0.25
   camMaxZoom: 2
   camNormZoom: 5
-  numHumanPlayers: 1
+  numHumanPlayers: 2
   roundWinnerBanner: {fileID: 1959982113}
   bannerScrollSpeed: 1000
+  roundWinnerText: {fileID: 162295840}
   spawn1: {fileID: 351721870}
   spawn2: {fileID: 1162487516}
   spawn3: {fileID: 1788408831}
@@ -1820,6 +1821,14 @@ MonoBehaviour:
   powerupSpawnInterval: 8
   endRoundTime: 2
   isEndRound: 0
+  player1Score: 0
+  player1ScoreText: {fileID: 221958227}
+  player2Score: 0
+  player2ScoreText: {fileID: 1300264993}
+  player3Score: 0
+  player3ScoreText: {fileID: 1316450038}
+  player4Score: 0
+  player4ScoreText: {fileID: 400820508}
   players: []
   playerSpawns: []
   playerMaterials: []
@@ -1841,6 +1850,10 @@ MonoBehaviour:
   leftInput: a
   downInput: s
   rightInput: d
+  p2UpInput: up
+  p2LeftInput: left
+  p2DownInput: down
+  p2RightInput: right
 --- !u!114 &1614233439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2062,8 +2075,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: ef7c6393f0221234c86daf22a3b9758a, type: 2}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.53333336, g: 0.53333336, b: 0.53333336, a: 0}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2249,7 +2262,7 @@ PrefabInstance:
     - target: {fileID: 595497019314503452, guid: 136fc7cb505f59549bbee0d9ab486177,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 595497019314503455, guid: 136fc7cb505f59549bbee0d9ab486177,
         type: 3}

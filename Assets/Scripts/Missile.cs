@@ -132,7 +132,7 @@ public class Missile : MonoBehaviour
             //Check if last player was killed
             if (players[0].GetComponent<Player>().isAlive == false && players[1].GetComponent<Player>().isAlive == false && players[2].GetComponent<Player>().isAlive == false && players[3].GetComponent<Player>().isAlive == false)
             {
-                gameManager.GetComponent<GameManager>().EndRound();
+                gameManager.GetComponent<GameManager>().EndRound(collider.gameObject.GetComponent<Player>().pIndex);
             }
         } else if (collider.gameObject.tag == "Wall")
         {

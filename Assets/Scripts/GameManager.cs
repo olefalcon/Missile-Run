@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public float numHumanPlayers;
     public Image roundWinnerBanner;
     public float bannerScrollSpeed;
+    public Text roundWinnerText;
     public Transform spawn1;
     public Transform spawn2;
     public Transform spawn3;
@@ -37,6 +38,15 @@ public class GameManager : MonoBehaviour
     private float endRoundTimer;
     public float endRoundTime;
     public bool isEndRound = false;
+    //Score Data
+    public int player1Score;
+    public Text player1ScoreText;
+    public int player2Score;
+    public Text player2ScoreText;
+    public int player3Score;
+    public Text player3ScoreText;
+    public int player4Score;
+    public Text player4ScoreText;
     //Player Data
     public GameObject[] players;
     public Transform[] playerSpawns;
@@ -47,6 +57,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         defaultCameraPos = cam.transform.position;
+        InitScores();
         SetupArrays();
         CompilePlayerSpawns();
         CompilePlayerMaterials();
@@ -90,13 +101,42 @@ public class GameManager : MonoBehaviour
         powerupSpawnTimer = powerupSpawnInterval;
     }
     //Function when round ends
-    public void EndRound()
+    public void EndRound(int winnerIndex)
     {
         isEndRound = true;
         endRoundTimer = endRoundTime;
+        //End of round cam
         cam.transform.position = new Vector3(missile.transform.position.x, 10f, missile.transform.position.z);
-        cam.orthographicSize = camNormZoom;
+        cam.orthographicSize = camMaxZoom;
+        string winnerColor = indexToColor(winnerIndex);
+        roundWinnerText.text = winnerColor + " Wins!";
         roundWinnerBanner.transform.localPosition = new Vector3(181f, 0f, 0f);
+        //Score Handling
+        Text winnerScoreText = player1ScoreText;
+        int winnerScore = 0;
+        switch (winnerIndex) {
+            case 0:
+                ++player1Score;
+                winnerScoreText = player1ScoreText;
+                winnerScore = player1Score;
+                break;
+            case 1:
+                ++player2Score;
+                winnerScoreText = player2ScoreText;
+                winnerScore = player2Score;
+                break;
+            case 2:
+                ++player3Score;
+                winnerScoreText = player3ScoreText;
+                winnerScore = player3Score;
+                break;
+            case 3:
+                ++player4Score;
+                winnerScoreText = player4ScoreText;
+                winnerScore = player4Score;
+                break;
+        }
+        winnerScoreText.text = winnerScore.ToString();
     }
     //Function when round is restarting
     public void RestartRound()
@@ -116,7 +156,7 @@ public class GameManager : MonoBehaviour
         }
         Time.timeScale = 1f;
         isEndRound = false;
-        cam.orthographicSize = 6f;
+        cam.orthographicSize = camNormZoom;
         cam.transform.position = defaultCameraPos;
         roundWinnerBanner.transform.localPosition = new Vector3(-1500f, 100f, 0f);
         StartRound();
@@ -124,16 +164,17 @@ public class GameManager : MonoBehaviour
     //Function to create player
     public void CreatePlayer(int index)
     {
-        print(playerMaterials[index]);
         players[index] = (Instantiate(playerPrefab, playerSpawns[index].position, Quaternion.identity));
         players[index].name = "Player" + index;
         players[index].GetComponent<Player>().material = playerMaterials[index];
+        players[index].GetComponent<Player>().pIndex = index;
         if (index >= numHumanPlayers)
         {
             players[index].AddComponent<PlayerAI>();
         } else
         {
-            players[index].AddComponent<PlayerInput>();
+            PlayerInput p = players[index].AddComponent<PlayerInput>();
+            p.playerIndex = index;
         }
     }
     //Function to create a missile
@@ -192,5 +233,29 @@ public class GameManager : MonoBehaviour
     {
         Vector3 powerupPos = new Vector3(Random.Range(-4f, 4f), 0.5f, Random.Range(-4f, 4f));
         Instantiate(powerupPrefab, powerupPos, Quaternion.identity, powerupParent.transform);
+    }
+    public void InitScores()
+    {
+        player1Score = 0;
+        player1ScoreText.text = "0";
+        player2Score = 0;
+        player2ScoreText.text = "0";
+        player3Score = 0;
+        player3ScoreText.text = "0";
+        player4Score = 0;
+        player4ScoreText.text = "0";
+    }
+    public string indexToColor(int index) {
+        switch (index) {
+            case 0:
+                return "Blue";
+            case 1:
+                return "Red";
+            case 2:
+                return "Yellow";
+            case 3:
+                return "Green";
+        }
+        return "Nobody";
     }
 }

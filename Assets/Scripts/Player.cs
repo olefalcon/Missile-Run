@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     public Material material;
     public ParticleSystem ps;
     public ParticleSystemRenderer psr;
+    public int pIndex;
     //Private 
     public float speed;
     

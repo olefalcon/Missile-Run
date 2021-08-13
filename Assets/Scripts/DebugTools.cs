@@ -14,7 +14,7 @@ public class DebugTools : MonoBehaviour
     void Update() {
 
         if (Input.GetKeyDown(endRoundKey)) {
-            gms.EndRound();
+            gms.EndRound(0);
         }
 
     }
