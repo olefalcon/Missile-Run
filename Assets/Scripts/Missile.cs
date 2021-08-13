@@ -34,7 +34,8 @@ public class Missile : MonoBehaviour
         gameManager = GameObject.Find("GameManager");
         GameManager gameManagerScript = gameManager.GetComponent<GameManager>();
         players = gameManagerScript.players;
-        target = players[0];
+        int startTarget = Random.Range(0,4);
+        target = players[startTarget];
         direction = Vector3.zero;
         state = 2;
         startDelayTimer = startDelay;
@@ -100,7 +101,10 @@ public class Missile : MonoBehaviour
     {
         Vector3 oldPos = transform.position;
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
-        transform.LookAt(target.transform, Vector3.up);
+        if (state == 1) {
+            transform.LookAt(target.transform, Vector3.up);
+        }
+        
     }
 
     public void ChangeTarget(GameObject newTarget)

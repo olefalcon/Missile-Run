@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public float camZoomScaling;
     public float timeSlowScaling;
     public float camMaxZoom;
+    public float camNormZoom;
+    public float numHumanPlayers;
     public Image roundWinnerBanner;
     public float bannerScrollSpeed;
     public Transform spawn1;
@@ -44,6 +46,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        defaultCameraPos = cam.transform.position;
         SetupArrays();
         CompilePlayerSpawns();
         CompilePlayerMaterials();
@@ -92,8 +95,8 @@ public class GameManager : MonoBehaviour
         isEndRound = true;
         endRoundTimer = endRoundTime;
         cam.transform.position = new Vector3(missile.transform.position.x, 10f, missile.transform.position.z);
-        cam.orthographicSize = 4f;
-        roundWinnerBanner.transform.localPosition = new Vector3(0f, 100f, 0f);
+        cam.orthographicSize = camNormZoom;
+        roundWinnerBanner.transform.localPosition = new Vector3(181f, 0f, 0f);
     }
     //Function when round is restarting
     public void RestartRound()
@@ -125,7 +128,7 @@ public class GameManager : MonoBehaviour
         players[index] = (Instantiate(playerPrefab, playerSpawns[index].position, Quaternion.identity));
         players[index].name = "Player" + index;
         players[index].GetComponent<Player>().material = playerMaterials[index];
-        if (index >= 1)
+        if (index >= numHumanPlayers)
         {
             players[index].AddComponent<PlayerAI>();
         } else

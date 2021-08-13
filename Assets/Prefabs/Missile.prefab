@@ -287,7 +287,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 3
+      scalar: 0.5
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -779,10 +779,10 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 1
+    angle: 75
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
-    radiusThickness: 1
+    radiusThickness: 0
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: -0.1}
     m_Rotation: {x: 0, y: 180, z: 0}
@@ -1037,7 +1037,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 4
+      scalar: 20
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1414,7 +1414,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   ColorModule:
-    enabled: 0
+    enabled: 1
     gradient:
       serializedVersion: 2
       minMaxState: 1
@@ -1422,8 +1422,8 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 1, g: 1, b: 1, a: 1}
+        key0: {r: 0.99215686, g: 0.7406973, b: 0, a: 1}
+        key1: {r: 1, g: 0.18378538, b: 0, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -2684,9 +2684,9 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxis: 0
     inWorldSpace: 0
-    multiplyDragByParticleSize: 1
-    multiplyDragByParticleVelocity: 1
-    dampen: 0.01
+    multiplyDragByParticleSize: 0
+    multiplyDragByParticleVelocity: 0
+    dampen: 0.5
     drag:
       serializedVersion: 2
       minMaxState: 0
@@ -4828,8 +4828,8 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f1534dbe1dfd05a4f8a4a9b2d13b8c6e, type: 2}
-  - {fileID: 2100000, guid: f1534dbe1dfd05a4f8a4a9b2d13b8c6e, type: 2}
+  - {fileID: 2100000, guid: 0dc7bf3911daf4346a73a5d5b0793380, type: 2}
+  - {fileID: 2100000, guid: 0dc7bf3911daf4346a73a5d5b0793380, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4955,6 +4955,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rocket_Ship_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3870569626047972779, guid: fb73bd2a05cd248428644d64677e3803,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ef7c6393f0221234c86daf22a3b9758a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fb73bd2a05cd248428644d64677e3803, type: 3}
 --- !u!4 &3685609514814994180 stripped
