@@ -1,20 +1,24 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ParticleSystemJobs;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     public float baseSpeed;
     public bool hasPowerupEffect;
     public int powerupType;
     public float powerupTimer;
+    [SyncVar]
     public bool isAlive;
+    [SyncVar]
     public bool isInvis;
     public Vector3 glitchPosition;
     public int glitchMarksToPlace;
     public GameObject glitchMarkPrefab;
     public GameObject glitchModule;
+    [SyncVar]
     public bool hasShield;
     public Material material;
     public ParticleSystem ps;
@@ -28,6 +32,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        direction = new Vector3(0f,0f,0f);
         speed = baseSpeed;
         hasPowerupEffect = false;
         gameObject.GetComponentInChildren<Renderer>().material = material;
@@ -110,6 +115,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [ClientRpc]
     public void Die()
     {
         ps.Play();

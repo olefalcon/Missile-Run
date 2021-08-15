@@ -1,24 +1,17 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MenuManager : MonoBehaviour
+public class MenuManager : NetworkBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void HostGame()
     {
-
+        NetworkManager.singleton.StartHost();
     }
-
-    // Update is called once per frame
-    void Update()
+    public void JoinGame()
     {
-
-    }
-
-    public void PlaySingleplayer()
-    {
-        SceneManager.LoadScene("SinglePlayer");
+        NetworkManager.singleton.StartClient();
     }
 }

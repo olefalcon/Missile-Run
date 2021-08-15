@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Powerup : MonoBehaviour
+public class Powerup : NetworkBehaviour
 {
     public AudioManager am;
     public float lifespan;
@@ -15,6 +16,7 @@ public class Powerup : MonoBehaviour
     public GameObject glitchModulePrefab;
     public float shieldTime;
     private float lifespanTimer;
+    [SyncVar]
     public int powerupType;
     public Material speedMat;
     public Material invisMat;

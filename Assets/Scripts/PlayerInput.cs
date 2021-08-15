@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInput : MonoBehaviour
+public class PlayerInput : NetworkBehaviour
 {
     public GameObject gameManager;
     private Settings settings;
@@ -34,6 +35,9 @@ public class PlayerInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isLocalPlayer) {
+            return;
+        }
         //Default Direction Values
         float horizontal = 0;
         float vertical = 0;

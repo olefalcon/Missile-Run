@@ -1,17 +1,24 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     //Audio Manager
     public AudioManager am;
     //Object Data
     public GameObject playerPrefab;
     public GameObject missilePrefab;
-    public Vector3 defaultCameraPos;
+    //Cam Data and Positions
     public Camera cam;
+    public Vector3 lobbyCameraPos;
+    public Vector3 lobbyCameraRot;
+    public Vector3 gameCameraPos;
+    public Vector3 gameCameraRot;
+    public Vector3 endCameraPos;
+    public Vector3 endCameraRot;
     public float camZoomScaling;
     public float timeSlowScaling;
     public float camMaxZoom;
@@ -58,11 +65,12 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        defaultCameraPos = cam.transform.position;
         InitScores();
         SetupArrays();
         CompilePlayerSpawns();
         CompilePlayerMaterials();
+
+        //We will start the round when all clients are loaded in
         StartRound();
     }
 
@@ -83,21 +91,26 @@ public class GameManager : MonoBehaviour
                 RestartRound();
             }
             endRoundTimer -= Time.deltaTime;
+            /*
             if (cam.orthographicSize >= camMaxZoom)
             {
                 cam.orthographicSize -= Time.deltaTime * camZoomScaling;
             }
+            */
             Time.timeScale -= Time.deltaTime * timeSlowScaling;
         }
     }
     //Function to start a round
     public void StartRound()
     {
+        if (!isServer) {
+            return;
+        }
         CreateMissile();
-        CreatePlayer(0);
-        CreatePlayer(1);
-        CreatePlayer(2);
-        CreatePlayer(3);
+        //CreatePlayer(0);
+        //CreatePlayer(1);
+        //CreatePlayer(2);
+        //CreatePlayer(3);
         SpawnPillars();
         SpawnPowerup();
         powerupSpawnTimer = powerupSpawnInterval;
@@ -108,8 +121,8 @@ public class GameManager : MonoBehaviour
         isEndRound = true;
         endRoundTimer = endRoundTime;
         //End of round cam
-        cam.transform.position = new Vector3(missile.transform.position.x, 10f, missile.transform.position.z);
-        cam.orthographicSize = camMaxZoom;
+        //cam.transform.position = new Vector3(missile.transform.position.x, 10f, missile.transform.position.z);
+        //cam.orthographicSize = camMaxZoom;
         string winnerColor = indexToColor(winnerIndex);
         roundWinnerText.text = winnerColor + " Wins!";
         roundWinnerBanner.transform.localPosition = new Vector3(181f, 0f, 0f);
@@ -140,7 +153,7 @@ public class GameManager : MonoBehaviour
         }
         winnerScoreText.text = winnerScore.ToString();
         //EndRound sound
-        am.PlaySFX("endRound");
+        am.PlaySFX("roundEnd");
     }
     //Function when round is restarting
     public void RestartRound()
@@ -160,8 +173,8 @@ public class GameManager : MonoBehaviour
         }
         Time.timeScale = 1f;
         isEndRound = false;
-        cam.orthographicSize = camNormZoom;
-        cam.transform.position = defaultCameraPos;
+        //cam.orthographicSize = camNormZoom;
+        //cam.transform.position = defaultCameraPos;
         roundWinnerBanner.transform.localPosition = new Vector3(-1500f, 100f, 0f);
         StartRound();
     }
@@ -172,7 +185,7 @@ public class GameManager : MonoBehaviour
         players[index].name = "Player" + index;
         players[index].GetComponent<Player>().material = playerMaterials[index];
         players[index].GetComponent<Player>().pIndex = index;
-        if (index >= numHumanPlayers)
+        if (false)//index >= numHumanPlayers)
         {
             players[index].AddComponent<PlayerAI>();
         } else
@@ -186,6 +199,7 @@ public class GameManager : MonoBehaviour
     {
         missile = Instantiate(missilePrefab, missileSpawn.position, Quaternion.identity);
         missile.name = "Missile";
+        NetworkServer.Spawn(missile);
     }
 
     //Function to determine array lengths
@@ -221,7 +235,8 @@ public class GameManager : MonoBehaviour
                 pillarPos = new Vector3(Random.Range(-4f, 4f), 1f, Random.Range(-4f, 4f));
                 if (CheckPillarInterferences(pillarPos) == true) { pillarPosCheck = true; }
             }
-            Instantiate(pillarPrefab, pillarPos, Quaternion.identity, pillarsParent.transform);
+            GameObject pillar = Instantiate(pillarPrefab, pillarPos, Quaternion.identity, pillarsParent.transform);
+            NetworkServer.Spawn(pillar);
         }
     }
     public bool CheckPillarInterferences(Vector3 pos)
@@ -236,7 +251,8 @@ public class GameManager : MonoBehaviour
     public void SpawnPowerup()
     {
         Vector3 powerupPos = new Vector3(Random.Range(-4f, 4f), 0.5f, Random.Range(-4f, 4f));
-        Instantiate(powerupPrefab, powerupPos, Quaternion.identity, powerupParent.transform);
+        GameObject powerup = Instantiate(powerupPrefab, powerupPos, Quaternion.identity, powerupParent.transform);
+        NetworkServer.Spawn(powerup);
     }
     public void InitScores()
     {

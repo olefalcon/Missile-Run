@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Missile : MonoBehaviour
+public class Missile : NetworkBehaviour
 {
     public AudioManager am;
     public float startDelay;
@@ -46,6 +47,9 @@ public class Missile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isServer) {
+            return;
+        }
         if (state == 2)
         {
             if (startDelayTimer <= 0)
@@ -145,6 +149,7 @@ public class Missile : MonoBehaviour
             confusionTimer = confusionTime;
             if (collider.gameObject.name != "Wall")
             {
+                am.PlaySFX("missileHitWall");
                 Destroy(collider.gameObject);
             }
         }
