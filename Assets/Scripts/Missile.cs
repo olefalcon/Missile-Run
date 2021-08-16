@@ -36,9 +36,6 @@ public class Missile : NetworkBehaviour
         gameManager = GameObject.Find("GameManager");
         am = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         GameManager gameManagerScript = gameManager.GetComponent<GameManager>();
-        players = gameManagerScript.players;
-        int startTarget = Random.Range(0,4);
-        target = players[startTarget];
         direction = Vector3.zero;
         state = 2;
         startDelayTimer = startDelay;
@@ -47,13 +44,14 @@ public class Missile : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isServer) {
-            return;
-        }
+        if (!isServer) {return;}
         if (state == 2)
         {
             if (startDelayTimer <= 0)
             {
+                players = GameObject.FindGameObjectsWithTag("Player");
+                int startTarget = Random.Range(0,players.Length);
+                target = players[startTarget];
                 state = 1;
             } else
             {

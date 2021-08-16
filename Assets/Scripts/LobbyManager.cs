@@ -42,7 +42,6 @@ public class LobbyManager : NetworkBehaviour
     }
 
     public void readyUp() {
-        print(NetworkManager.singleton);
         //NetworkManager.singleton.Ready();
     }
 

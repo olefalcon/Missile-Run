@@ -77,13 +77,17 @@ public class GameManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        return;
+        //No actions need to be done on update on a client
+        if (!isServer) {return;}
+        //Check for new powerup spawn
         if (powerupSpawnTimer <= 0)
         {
             SpawnPowerup();
             powerupSpawnTimer = powerupSpawnInterval;
         }
         powerupSpawnTimer -= Time.deltaTime;
-        
+        //Check if end round timer is up
         if (isEndRound)
         {
             if (endRoundTimer <= 0)
@@ -103,9 +107,8 @@ public class GameManager : NetworkBehaviour
     //Function to start a round
     public void StartRound()
     {
-        if (!isServer) {
-            return;
-        }
+        Debug.Log(isServer);
+        if (!isServer) {return;}
         CreateMissile();
         //CreatePlayer(0);
         //CreatePlayer(1);
@@ -199,7 +202,7 @@ public class GameManager : NetworkBehaviour
     {
         missile = Instantiate(missilePrefab, missileSpawn.position, Quaternion.identity);
         missile.name = "Missile";
-        NetworkServer.Spawn(missile);
+        NetworkServer.Spawn(missile.gameObject);
     }
 
     //Function to determine array lengths
@@ -217,6 +220,7 @@ public class GameManager : NetworkBehaviour
         playerSpawns[2] = spawn3;
         playerSpawns[3] = spawn4;
     }
+    //Function to compile player materials
     public void CompilePlayerMaterials()
     {
         playerMaterials[0] = player1mat;
@@ -224,6 +228,7 @@ public class GameManager : NetworkBehaviour
         playerMaterials[2] = player3mat;
         playerMaterials[3] = player4mat;
     }
+    //Function to spawn pillars
     public void SpawnPillars()
     {
         for (int i = 0; i < numPillars; i++)
@@ -236,9 +241,10 @@ public class GameManager : NetworkBehaviour
                 if (CheckPillarInterferences(pillarPos) == true) { pillarPosCheck = true; }
             }
             GameObject pillar = Instantiate(pillarPrefab, pillarPos, Quaternion.identity, pillarsParent.transform);
-            NetworkServer.Spawn(pillar);
+            NetworkServer.Spawn(pillar.gameObject);
         }
     }
+    //Function used to check if a chosen pillar spawn location conflicts with a player or missile's start location
     public bool CheckPillarInterferences(Vector3 pos)
     {
         if (Vector3.Distance(pos, spawn1.position) < interferenceRange) { return false; }
@@ -248,12 +254,14 @@ public class GameManager : NetworkBehaviour
         if (Vector3.Distance(pos, missileSpawn.position) < interferenceRange) { return false; }
         return true;
     }
+    //function to spawn powerup
     public void SpawnPowerup()
     {
         Vector3 powerupPos = new Vector3(Random.Range(-4f, 4f), 0.5f, Random.Range(-4f, 4f));
         GameObject powerup = Instantiate(powerupPrefab, powerupPos, Quaternion.identity, powerupParent.transform);
-        NetworkServer.Spawn(powerup);
+        NetworkServer.Spawn(powerup.gameObject);
     }
+    //function to init all scores and score texts to 0
     public void InitScores()
     {
         player1Score = 0;
@@ -265,6 +273,7 @@ public class GameManager : NetworkBehaviour
         player4Score = 0;
         player4ScoreText.text = "0";
     }
+    //function that returns the color associated with a player index --used to announce what color wins
     public string indexToColor(int index) {
         switch (index) {
             case 0:
