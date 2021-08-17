@@ -774,7 +774,7 @@ MonoBehaviour:
   - {fileID: 7706882503689094839, guid: 0aa63e56a5fd9fc4d9d29fe55d2cd456, type: 3}
   - {fileID: 7586020172690243511, guid: 086e982066ba2f04ba638cd7e8f68ae6, type: 3}
   - {fileID: 1776740055097110766, guid: c74a2c297264f574e922d392ed656937, type: 3}
-  - {fileID: 0}
+  - {fileID: 2394651412737671346, guid: cafb030c04b45b745a81663e14a28014, type: 3}
   showRoomGUI: 1
   minPlayers: 1
   roomPlayerPrefab: {fileID: 5034911401310186040, guid: 9d12c4a08af7ea44c9de72c3fb61175f,
@@ -784,6 +784,7 @@ MonoBehaviour:
   _allPlayersReady: 0
   roomSlots: []
   clientIndex: 0
+  playerNum: 0
 --- !u!4 &347348412
 Transform:
   m_ObjectHideFlags: 0

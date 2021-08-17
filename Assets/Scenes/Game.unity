@@ -4190,10 +4190,17 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   am: {fileID: 1230352744}
-  playerPrefab: {fileID: 2394651412737671346, guid: 0b481d4e9b51f7140a92c02f1e188a93,
+  playerAIPrefab: {fileID: 2394651412737671346, guid: cafb030c04b45b745a81663e14a28014,
     type: 3}
   missilePrefab: {fileID: 1776740055097110766, guid: c74a2c297264f574e922d392ed656937,
     type: 3}
+  powerupParent: {fileID: 77151361}
+  powerupPrefab: {fileID: 7706882503689094839, guid: 0aa63e56a5fd9fc4d9d29fe55d2cd456,
+    type: 3}
+  pillarsParent: {fileID: 577801920}
+  pillarPrefab: {fileID: 7586020172690243511, guid: 086e982066ba2f04ba638cd7e8f68ae6,
+    type: 3}
+  nm: {fileID: 0}
   cam: {fileID: 282840813}
   lobbyCameraPos: {x: 0, y: 0, z: 0}
   lobbyCameraRot: {x: 0, y: 0, z: 0}
@@ -4205,6 +4212,9 @@ MonoBehaviour:
   timeSlowScaling: 0.25
   camMaxZoom: 2
   camNormZoom: 5
+  isStart: 0
+  startDelay: 5
+  startDelayTimer: 0
   numHumanPlayers: 1
   roundWinnerBanner: {fileID: 1959982113}
   bannerScrollSpeed: 1000
@@ -4219,13 +4229,7 @@ MonoBehaviour:
   player4mat: {fileID: 2100000, guid: 2d36c91243099464ebad8374af1d19cb, type: 2}
   missileSpawn: {fileID: 272222713}
   numPillars: 6
-  pillarsParent: {fileID: 577801920}
-  pillarPrefab: {fileID: 7586020172690243511, guid: 086e982066ba2f04ba638cd7e8f68ae6,
-    type: 3}
   interferenceRange: 1.5
-  powerupParent: {fileID: 77151361}
-  powerupPrefab: {fileID: 7706882503689094839, guid: 0aa63e56a5fd9fc4d9d29fe55d2cd456,
-    type: 3}
   powerupSpawnInterval: 8
   endRoundTime: 2
   isEndRound: 0

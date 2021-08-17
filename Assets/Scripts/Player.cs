@@ -12,35 +12,40 @@ public class Player : NetworkBehaviour
     public float powerupTimer;
     [SyncVar]
     public bool isAlive;
-    [SyncVar]
     public bool isInvis;
     public Vector3 glitchPosition;
     public int glitchMarksToPlace;
     public GameObject glitchMarkPrefab;
     public GameObject glitchModule;
-    [SyncVar]
     public bool hasShield;
     public Material material;
     public ParticleSystem ps;
     public ParticleSystemRenderer psr;
+    [SyncVar]
     public int pIndex;
     //Private 
     public float speed;
-    
+    //Materials for assignment
+    public Material player1mat;
+    public Material player2mat;
+    public Material player3mat;
+    public Material player4mat;
 
     public Vector3 direction;
+    public Vector3 spawnLocation;
 
     void Start()
     {
+        if (isLocalPlayer) {
+            NewNetworkRoomManager nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
+            Debug.Log(nm.playerNum);
+            DeterminePlayerIndex(nm.playerNum);
+        }
+        AssignMat();
+        spawnLocation = transform.position;
         direction = new Vector3(0f,0f,0f);
         speed = baseSpeed;
         hasPowerupEffect = false;
-        gameObject.GetComponentInChildren<Renderer>().material = material;
-        ps = gameObject.transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
-        psr = gameObject.transform.GetChild(1).gameObject.GetComponentInChildren<ParticleSystemRenderer>();
-        psr.material = material;
-        psr.trailMaterial = material;
-
         isAlive = true;
     }
 
@@ -120,17 +125,50 @@ public class Player : NetworkBehaviour
     {
         ps.Play();
         gameObject.transform.GetChild(0).gameObject.SetActive(false);
-        isAlive = false;
+        //is alive has to be set on the missile script because of delay
+        //isAlive = false;
     }
-
+    [Command]
+    void DeterminePlayerIndex(int playerNum) {
+        pIndex = playerNum;
+    }
+    void AssignMat()
+    {
+        //Find material from player index
+        switch(pIndex) {
+            case 0:
+                material = player1mat;
+                break;
+            case 1:
+                material = player2mat;
+                break;
+            case 2:
+                material = player3mat;
+                break;
+            case 3:
+                material = player4mat;
+                break;
+        }
+        //Apply mat to gameobject
+        gameObject.GetComponentInChildren<Renderer>().material = material;
+        ps = gameObject.transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
+        psr = gameObject.transform.GetChild(1).gameObject.GetComponentInChildren<ParticleSystemRenderer>();
+        psr.material = material;
+        psr.trailMaterial = material;
+    }
     private void OnTriggerEnter(Collider collider)
     {
+        if (!isServer || !isLocalPlayer) {return;}
         if (collider.gameObject.tag == "Powerup")
         {
             if (hasPowerupEffect == false)
             {
-                collider.GetComponent<Powerup>().ActivatePowerup(gameObject);
+                CmdActivatePowerup(collider.gameObject);
             }
         }
+    }
+    [Command]
+    void CmdActivatePowerup(GameObject collider) {
+        collider.GetComponent<Powerup>().ActivatePowerup(gameObject);
     }
 }

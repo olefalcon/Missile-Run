@@ -15,11 +15,13 @@ public class Missile : NetworkBehaviour
     public float speedScaling;
     public float accelerationScaling;
     public GameObject[] players;
+    [SyncVar]
     public GameObject target;
     //State 0 equals not chasing
     //state 1 equals chasing
     //state 2 equals starting delay
     //state 3 equals no targets roam
+    [SyncVar]
     public int state;
 
     public float confusionTime;
@@ -39,17 +41,16 @@ public class Missile : NetworkBehaviour
         direction = Vector3.zero;
         state = 2;
         startDelayTimer = startDelay;
+        players = GameObject.FindGameObjectsWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isServer) {return;}
         if (state == 2)
         {
             if (startDelayTimer <= 0)
             {
-                players = GameObject.FindGameObjectsWithTag("Player");
                 int startTarget = Random.Range(0,players.Length);
                 target = players[startTarget];
                 state = 1;
@@ -58,8 +59,19 @@ public class Missile : NetworkBehaviour
                 startDelayTimer -= Time.deltaTime;
             }
         }
+        else if (!isServer) {
+            //Clients only need to change the material of the rocket
+            if (state == 2) {
+                gameObject.GetComponentInChildren<Renderer>().material = missileMat;
+            } else{
+                gameObject.GetComponentInChildren<Renderer>().material = target.GetComponentInChildren<Renderer>().material;
+            }
+            return;
+        }
         else if (state == 1)
         {
+            closestDist = 100;
+            //If current target is alive set closest dist to its position
             if (target.GetComponent<Player>().isAlive == true)
             {
                 closestDist = Vector3.Distance(target.transform.position, transform.position);
@@ -67,6 +79,7 @@ public class Missile : NetworkBehaviour
             foreach (GameObject player in players)
             {
                 float newDist = Vector3.Distance(player.transform.position, transform.position);
+                //Compare each player that is alive and not invisible's distance to the current target
                 if (player.GetComponent<Player>().isAlive == true && newDist < closestDist && player.GetComponent<Player>().isInvis == false)
                 {
                     target = player;
@@ -120,6 +133,7 @@ public class Missile : NetworkBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
+        if (!isServer) {return;}
         if (collider.gameObject.tag == "Player" && collider.gameObject.GetComponent<Player>().isAlive == true)
         {
             if (collider.gameObject.GetComponent<Player>().hasShield == true)
@@ -131,12 +145,15 @@ public class Missile : NetworkBehaviour
             } else
             {
                 collider.gameObject.GetComponent<Player>().Die();
+                collider.gameObject.GetComponent<Player>().isAlive = false;
                 am.PlaySFX("playerDeath");
             }
             closestDist = 1000f;
             //Check if last player was killed
-            if (players[0].GetComponent<Player>().isAlive == false && players[1].GetComponent<Player>().isAlive == false && players[2].GetComponent<Player>().isAlive == false && players[3].GetComponent<Player>().isAlive == false)
+            Debug.Log("isAlivePlayer = " + isAlivePlayer());
+            if (!isAlivePlayer())
             {
+                Debug.Log("no more players alive <3");
                 gameManager.GetComponent<GameManager>().EndRound(collider.gameObject.GetComponent<Player>().pIndex);
             }
         } else if (collider.gameObject.tag == "Wall")
@@ -151,5 +168,13 @@ public class Missile : NetworkBehaviour
                 Destroy(collider.gameObject);
             }
         }
+    }
+    private bool isAlivePlayer() {
+        foreach (GameObject player in players) {
+            if (player.GetComponent<Player>().isAlive) {
+                return true;
+            }
+        }
+        return false;
     }
 }

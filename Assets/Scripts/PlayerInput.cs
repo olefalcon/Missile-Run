@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerInput : NetworkBehaviour
 {
-    public GameObject gameManager;
+    public GameObject gm;
     private Settings settings;
     public int playerIndex;
     private string upInput;
@@ -16,8 +16,8 @@ public class PlayerInput : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.Find("GameManager");
-        settings = gameManager.GetComponent<Settings>();
+        gm = GameObject.Find("GameManager");
+        settings = gm.GetComponent<Settings>();
         if (playerIndex == 0) {
             upInput = settings.upInput;
             leftInput = settings.leftInput;
@@ -35,9 +35,10 @@ public class PlayerInput : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isLocalPlayer) {
-            return;
-        }
+        //No input if this isn't your player
+        if (!isLocalPlayer) {return;}
+        //No input before start delay
+        if (!gm.GetComponent<GameManager>().isStart) {return;}
         //Default Direction Values
         float horizontal = 0;
         float vertical = 0;

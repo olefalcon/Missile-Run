@@ -18,6 +18,8 @@ using Mirror;
 /// </summary>
 public class NewNetworkRoomManager : NetworkRoomManager
 {
+    public int playerNum;
+
     #region Server Callbacks
 
     /// <summary>
@@ -82,6 +84,8 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// <returns>A new GamePlayer object.</returns>
     public override GameObject OnRoomServerCreateGamePlayer(NetworkConnection conn, GameObject roomPlayer)
     {
+        playerNum = roomPlayer.GetComponent<NetworkRoomPlayer>().index;
+        Debug.Log(playerNum);
         return base.OnRoomServerCreateGamePlayer(conn, roomPlayer);
     }
 
@@ -142,7 +146,7 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// This is called on the client when it connects to server.
     /// </summary>
     /// <param name="conn">The connection that connected.</param>
-    public override void OnRoomClientConnect(NetworkConnection conn) { }
+    public override void OnRoomClientConnect(NetworkConnection conn) {    }
 
     /// <summary>
     /// This is called on the client when disconnected from a server.

@@ -29,7 +29,9 @@ public class Powerup : NetworkBehaviour
     {
         am = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         lifespanTimer = lifespan;
-        AssignType();
+        if (isServer) {
+            AssignType();
+        }
         AssignMat();
     }
 
@@ -43,7 +45,7 @@ public class Powerup : NetworkBehaviour
         transform.Rotate(new Vector3(1f, 1f, 1f)* Time.deltaTime * rotateSpeed, Space.World);
     }
 
-    public void AssignType()
+    void AssignType()
     {
         powerupType = Mathf.RoundToInt(Random.Range(1f, 5f));
     }
@@ -68,7 +70,7 @@ public class Powerup : NetworkBehaviour
             rend.material = shieldMat;
         }
     }
-
+    [ClientRpc]
     public void ActivatePowerup(GameObject player)
     {
         switch(powerupType)

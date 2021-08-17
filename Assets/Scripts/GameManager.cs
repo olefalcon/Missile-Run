@@ -9,8 +9,14 @@ public class GameManager : NetworkBehaviour
     //Audio Manager
     public AudioManager am;
     //Object Data
-    public GameObject playerPrefab;
+    public GameObject playerAIPrefab;
     public GameObject missilePrefab;
+    public GameObject powerupParent;
+    public GameObject powerupPrefab;
+    public GameObject pillarsParent;
+    public GameObject pillarPrefab;
+    //Network Manager
+    public NewNetworkRoomManager nm;
     //Cam Data and Positions
     public Camera cam;
     public Vector3 lobbyCameraPos;
@@ -23,6 +29,11 @@ public class GameManager : NetworkBehaviour
     public float timeSlowScaling;
     public float camMaxZoom;
     public float camNormZoom;
+    //Game State
+    [SyncVar]
+    public bool isStart;
+    public float startDelay;
+    public float startDelayTimer;
     public float numHumanPlayers;
     public Image roundWinnerBanner;
     public float bannerScrollSpeed;
@@ -37,11 +48,7 @@ public class GameManager : NetworkBehaviour
     public Material player4mat;
     public Transform missileSpawn;
     public float numPillars;
-    public GameObject pillarsParent;
-    public GameObject pillarPrefab;
     public float interferenceRange;
-    public GameObject powerupParent;
-    public GameObject powerupPrefab;
     public float powerupSpawnInterval;
     private float powerupSpawnTimer;
     private float endRoundTimer;
@@ -65,22 +72,32 @@ public class GameManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
         InitScores();
         SetupArrays();
         CompilePlayerSpawns();
         CompilePlayerMaterials();
-
+        startDelayTimer = startDelay;
         //We will start the round when all clients are loaded in
-        StartRound();
+        //StartRound();
     }
 
     // Update is called once per frame
     void Update()
     {
-        return;
         //No actions need to be done on update on a client
         if (!isServer) {return;}
         //Check for new powerup spawn
+        if (!isStart) {
+            if (startDelayTimer <= 0) {
+                isStart = true;
+                StartRound();
+            } else {
+                startDelayTimer -= Time.deltaTime;
+                return;
+            }
+        }
+        
         if (powerupSpawnTimer <= 0)
         {
             SpawnPowerup();
@@ -107,9 +124,12 @@ public class GameManager : NetworkBehaviour
     //Function to start a round
     public void StartRound()
     {
-        Debug.Log(isServer);
         if (!isServer) {return;}
         CreateMissile();
+        int numPlayers = nm.numPlayers;
+        for (int i=numPlayers;i<4;i++) {
+            CreatePlayerAI(i);
+        }
         //CreatePlayer(0);
         //CreatePlayer(1);
         //CreatePlayer(2);
@@ -119,6 +139,7 @@ public class GameManager : NetworkBehaviour
         powerupSpawnTimer = powerupSpawnInterval;
     }
     //Function when round ends
+    [ClientRpc]
     public void EndRound(int winnerIndex)
     {
         isEndRound = true;
@@ -159,21 +180,32 @@ public class GameManager : NetworkBehaviour
         am.PlaySFX("roundEnd");
     }
     //Function when round is restarting
+    [ClientRpc]
     public void RestartRound()
     {
-        foreach (GameObject player in players)
-        {
-            Destroy(player);
+        if (isServer) {
+            players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                if (player.GetComponent<PlayerAI>() != null) {
+                    Destroy(player);
+                    return;
+                }
+                player.transform.position = nm.GetStartPosition().position;
+                player.transform.GetChild(0).gameObject.SetActive(true);
+                player.GetComponent<Player>().isAlive = true;
+            }
+            Destroy(missile);
+            foreach (Transform pillar in pillarsParent.transform)
+            {
+                Destroy(pillar.gameObject);
+            }
+            foreach (Transform powerup in powerupParent.transform)
+            {
+                Destroy(powerup.gameObject);
+            }
         }
-        Destroy(missile);
-        foreach (Transform pillar in pillarsParent.transform)
-        {
-            Destroy(pillar.gameObject);
-        }
-        foreach (Transform powerup in powerupParent.transform)
-        {
-            Destroy(powerup.gameObject);
-        }
+        
         Time.timeScale = 1f;
         isEndRound = false;
         //cam.orthographicSize = camNormZoom;
@@ -182,27 +214,19 @@ public class GameManager : NetworkBehaviour
         StartRound();
     }
     //Function to create player
-    public void CreatePlayer(int index)
+    public void CreatePlayerAI(int index)
     {
-        players[index] = (Instantiate(playerPrefab, playerSpawns[index].position, Quaternion.identity));
-        players[index].name = "Player" + index;
-        players[index].GetComponent<Player>().material = playerMaterials[index];
-        players[index].GetComponent<Player>().pIndex = index;
-        if (false)//index >= numHumanPlayers)
-        {
-            players[index].AddComponent<PlayerAI>();
-        } else
-        {
-            PlayerInput p = players[index].AddComponent<PlayerInput>();
-            p.playerIndex = index;
-        }
+        GameObject ai = (Instantiate(playerAIPrefab, nm.GetStartPosition().position, Quaternion.identity));
+        ai.GetComponent<Player>().material = playerMaterials[index];
+        ai.GetComponent<Player>().pIndex = index;
+        NetworkServer.Spawn(ai);
     }
     //Function to create a missile
     public void CreateMissile()
     {
         missile = Instantiate(missilePrefab, missileSpawn.position, Quaternion.identity);
         missile.name = "Missile";
-        NetworkServer.Spawn(missile.gameObject);
+        NetworkServer.Spawn(missile.gameObject, connectionToServer);
     }
 
     //Function to determine array lengths
