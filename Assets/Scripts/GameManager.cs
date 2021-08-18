@@ -63,6 +63,8 @@ public class GameManager : NetworkBehaviour
     public Text player3ScoreText;
     public int player4Score;
     public Text player4ScoreText;
+    //Overlays
+    public Image loadingScreen;
     //Player Data
     public GameObject[] players;
     public Transform[] playerSpawns;
@@ -124,6 +126,10 @@ public class GameManager : NetworkBehaviour
     //Function to start a round
     public void StartRound()
     {
+        am.PlaySFX("subDrop");
+        if (loadingScreen.gameObject.activeInHierarchy) {
+            loadingScreen.gameObject.SetActive(false);
+        }
         if (!isServer) {return;}
         CreateMissile();
         int numPlayers = nm.numPlayers;
@@ -177,6 +183,7 @@ public class GameManager : NetworkBehaviour
         }
         winnerScoreText.text = winnerScore.ToString();
         //EndRound sound
+        am.StopMusic();
         am.PlaySFX("roundEnd");
     }
     //Function when round is restarting

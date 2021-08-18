@@ -54,6 +54,7 @@ public class Missile : NetworkBehaviour
                 int startTarget = Random.Range(0,players.Length);
                 target = players[startTarget];
                 state = 1;
+                am.PlaySFX("music");
             } else
             {
                 startDelayTimer -= Time.deltaTime;
@@ -78,6 +79,9 @@ public class Missile : NetworkBehaviour
             }
             foreach (GameObject player in players)
             {
+                //Player will be null for 1 update cycle when ai spawns between rounds
+                //This check prevents a non game breaking missingReferenceException
+                if (player == null) {return;}
                 float newDist = Vector3.Distance(player.transform.position, transform.position);
                 //Compare each player that is alive and not invisible's distance to the current target
                 if (player.GetComponent<Player>().isAlive == true && newDist < closestDist && player.GetComponent<Player>().isInvis == false)

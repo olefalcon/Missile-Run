@@ -14,6 +14,8 @@ public class AudioManager : MonoBehaviour
     public AudioSource glitch;
     public AudioSource roundEnd;
     public AudioSource missileHitWall;
+    public AudioSource subDrop;
+    public AudioSource music;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,5 +33,9 @@ public class AudioManager : MonoBehaviour
         //Converts the string sfx into the variable sfx and plays the clip
         AudioSource asource = (AudioSource)this.GetType().GetField(sfx).GetValue(this);
         asource.Play();
+    }
+    //Function for stopping music
+    public void StopMusic() {
+        music.Stop();
     }
 }
