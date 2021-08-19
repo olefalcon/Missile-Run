@@ -23,10 +23,23 @@ public class MenuManager : MonoBehaviour
     public Button joinGameButton;
     public Button settingsGameButton;
     public Button quitGameButton;
+    //Menu panels
+    public Image splashScreen;
+    public Image hostMenu;
+    public Image joinMenu;
+    public Image settingsMenu;
+    //Input fields
+    public InputField hostIPField;
+    public InputField hostNameField;
+    public InputField joinIPField;
+    public InputField joinNameField;
+    //Network Manager
+    public NewNetworkRoomManager nm;
 
     void Start() {
         preGameScreenTimer = preGameScreenTime;
         beatTimer = 0;
+        nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
     }
 
     void Update () {
@@ -43,16 +56,40 @@ public class MenuManager : MonoBehaviour
             preGameScreenTimer -= Time.deltaTime;
         }
     }
-    /*
     public void HostGame()
     {
+        nm.playerName = hostNameField.text;
         NetworkManager.singleton.StartHost();
     }
     public void JoinGame()
     {
+        nm.playerName = joinNameField.text;
+        NetworkManager.singleton.networkAddress = joinIPField.text;
         NetworkManager.singleton.StartClient();
     }
-    
+    public void Settings() {
+        settingsMenu.gameObject.SetActive(true);
+    }
+    public void AcceptSettings() {
+        settingsMenu.gameObject.SetActive(false);
+    }
+    public void QuitGame() {
+        Application.Quit();
+    }
+    public void HostMenu() {
+        hostIPField.text = NetworkManager.singleton.networkAddress;
+        hostMenu.gameObject.SetActive(true);
+    }
+    public void HostMenuClose() {
+        hostMenu.gameObject.SetActive(false);
+    }
+    public void JoinMenu() {
+        joinMenu.gameObject.SetActive(true);
+    }
+    public void JoinMenuClose() {
+        joinMenu.gameObject.SetActive(false);
+    }
+    /*
     public void animateMenuButtons() {
         Sequence mainMenuSequence = DOTween.Sequence();
         mainMenuSequence.Append(hostGameButton.rectTransform.DOAnchorPosY(-40f,0.46875, false).SetEasy(Ease.OutQuint))
@@ -60,5 +97,6 @@ public class MenuManager : MonoBehaviour
         .Append(settingsGameButton.transform.DOMoveY(-80f,0.46875, false))
         .Append(quitGameButton.transform.DOMoveY(-100f,0.46875, false));
         mainMenuSequence();
+    }
     */
 }

@@ -154,7 +154,6 @@ public class Missile : NetworkBehaviour
             }
             closestDist = 1000f;
             //Check if last player was killed
-            Debug.Log("isAlivePlayer = " + isAlivePlayer());
             if (!isAlivePlayer())
             {
                 Debug.Log("no more players alive <3");

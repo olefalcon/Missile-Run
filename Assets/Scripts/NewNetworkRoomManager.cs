@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using Mirror;
 
 /*
@@ -18,7 +19,11 @@ using Mirror;
 /// </summary>
 public class NewNetworkRoomManager : NetworkRoomManager
 {
+    //Player tracking info
     public int playerNum;
+    public string playerName;
+    //Lobby manager object
+    public LobbyManager lm;
 
     #region Server Callbacks
 
@@ -48,8 +53,6 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// </summary>
     /// <param name="conn">The new connection.</param>
     public override void OnRoomServerConnect(NetworkConnection conn) {
-        LobbyManager lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
-        lm.playerJoin(0, "Player");
     }
 
     /// <summary>
@@ -84,8 +87,6 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// <returns>A new GamePlayer object.</returns>
     public override GameObject OnRoomServerCreateGamePlayer(NetworkConnection conn, GameObject roomPlayer)
     {
-        playerNum = roomPlayer.GetComponent<NetworkRoomPlayer>().index;
-        Debug.Log(playerNum);
         return base.OnRoomServerCreateGamePlayer(conn, roomPlayer);
     }
 
@@ -135,7 +136,13 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// <summary>
     /// This is a hook to allow custom behaviour when the game client enters the room.
     /// </summary>
-    public override void OnRoomClientEnter() { }
+    public override void OnRoomClientEnter() {
+        lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
+        playerNum = lm.playerNames.Count;
+        lm.playerJoin(playerName);
+        Debug.Log(playerNum);
+        Debug.Log(lm.playerNames);
+    }
 
     /// <summary>
     /// This is a hook to allow custom behaviour when the game client exits the room.

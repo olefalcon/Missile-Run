@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Wall
   - Powerup
+  - ChatWindow
+  - RoomPlayer
   layers:
   - Default
   - TransparentFX

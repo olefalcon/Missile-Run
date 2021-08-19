@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuCamera : MonoBehaviour
+public class MenuRotate : MonoBehaviour
 {
     public float rotateSpeed;
 

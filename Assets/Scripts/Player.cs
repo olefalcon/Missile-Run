@@ -38,7 +38,6 @@ public class Player : NetworkBehaviour
     {
         if (isLocalPlayer) {
             NewNetworkRoomManager nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
-            Debug.Log(nm.playerNum);
             DeterminePlayerIndex(nm.playerNum);
         }
         AssignMat();
