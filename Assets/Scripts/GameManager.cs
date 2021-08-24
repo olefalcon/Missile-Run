@@ -124,6 +124,7 @@ public class GameManager : NetworkBehaviour
         }
     }
     //Function to start a round
+    [ClientRpc]
     public void StartRound()
     {
         am.PlaySFX("subDrop");
@@ -190,18 +191,21 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void RestartRound()
     {
-        if (isServer) {
-            players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players)
-            {
-                if (player.GetComponent<PlayerAI>() != null) {
-                    Destroy(player);
-                    return;
-                }
+        players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            if (player.GetComponent<PlayerAI>() != null && isServer) {
+                Destroy(player);
+                return;
+            }
+            if (isServer) {
                 player.transform.position = nm.GetStartPosition().position;
-                player.transform.GetChild(0).gameObject.SetActive(true);
                 player.GetComponent<Player>().isAlive = true;
             }
+            player.transform.GetChild(0).gameObject.SetActive(true);
+        }
+        if (isServer) {
+            
             Destroy(missile);
             foreach (Transform pillar in pillarsParent.transform)
             {
@@ -218,7 +222,9 @@ public class GameManager : NetworkBehaviour
         //cam.orthographicSize = camNormZoom;
         //cam.transform.position = defaultCameraPos;
         roundWinnerBanner.transform.localPosition = new Vector3(-1500f, 100f, 0f);
-        StartRound();
+        if (isServer) {
+            StartRound();
+        }
     }
     //Function to create player
     public void CreatePlayerAI(int index)

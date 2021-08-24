@@ -42,7 +42,7 @@ public class LaserSpawner : MonoBehaviour
         float laserSpeed = Random.Range(minLaserSpeed, maxLaserSpeed);
         float laserLength = Random.Range(minLaserLength, maxLaserLength);
         float laserZ = Random.Range(-10f,10f);
-        GameObject laser = Instantiate(laserPrefab, transform.position + Vector3.forward*laserZ, Quaternion.identity);
+        GameObject laser = Instantiate(laserPrefab, transform.position + Vector3.forward*laserZ, transform.rotation);
         laser.GetComponent<Laser>().speed = laserSpeed;
         laser.transform.localScale = new Vector3(laserLength, .01f, 0.1f);
         laser.GetComponentInChildren<Renderer>().material = PickMat();

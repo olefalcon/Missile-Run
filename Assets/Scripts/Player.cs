@@ -39,8 +39,9 @@ public class Player : NetworkBehaviour
         if (isLocalPlayer) {
             NewNetworkRoomManager nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
             DeterminePlayerIndex(nm.playerNum);
+        } else {
+            AssignMat();
         }
-        AssignMat();
         spawnLocation = transform.position;
         direction = new Vector3(0f,0f,0f);
         speed = baseSpeed;
@@ -130,6 +131,11 @@ public class Player : NetworkBehaviour
     [Command]
     void DeterminePlayerIndex(int playerNum) {
         pIndex = playerNum;
+        RpcAssignMat();
+    }
+    [ClientRpc]
+    void RpcAssignMat() {
+        AssignMat();
     }
     void AssignMat()
     {

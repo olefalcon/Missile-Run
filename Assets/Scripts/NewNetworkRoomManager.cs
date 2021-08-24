@@ -24,6 +24,14 @@ public class NewNetworkRoomManager : NetworkRoomManager
     public string playerName;
     //Lobby manager object
     public LobbyManager lm;
+    //vars for player names
+    public string p1n = "";
+    public string p2n = "";
+    public string p3n = "";
+    public string p4n = "";
+    public int players = 0;
+
+
 
     #region Server Callbacks
 
@@ -137,11 +145,6 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// This is a hook to allow custom behaviour when the game client enters the room.
     /// </summary>
     public override void OnRoomClientEnter() {
-        lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
-        playerNum = lm.playerNames.Count;
-        lm.playerJoin(playerName);
-        Debug.Log(playerNum);
-        Debug.Log(lm.playerNames);
     }
 
     /// <summary>
