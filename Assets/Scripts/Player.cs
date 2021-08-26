@@ -40,7 +40,7 @@ public class Player : NetworkBehaviour
             NewNetworkRoomManager nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
             DeterminePlayerIndex(nm.playerNum);
         } else {
-            AssignMat();
+            AssignMat(pIndex);
         }
         spawnLocation = transform.position;
         direction = new Vector3(0f,0f,0f);
@@ -117,6 +117,17 @@ public class Player : NetworkBehaviour
         if (direction.magnitude >= 0.1f && isAlive)
         {
             transform.Translate(direction * speed * Time.deltaTime, Space.World);
+            //Bounds checks
+            if (transform.position.x < -4.5f) {
+                transform.position = new Vector3(-4.5f, transform.position.y, transform.position.z);
+            } else if (transform.position.x > 4.5f) {
+                transform.position = new Vector3(4.5f, transform.position.y, transform.position.z);
+            }
+            if (transform.position.z < -4.5f) {
+                transform.position = new Vector3(transform.position.x, transform.position.y, -4.5f);
+            } else if (transform.position.z > 4.5f) {
+                transform.position = new Vector3(transform.position.x, transform.position.y, 4.5f);
+            }
         }
     }
 
@@ -131,16 +142,16 @@ public class Player : NetworkBehaviour
     [Command]
     void DeterminePlayerIndex(int playerNum) {
         pIndex = playerNum;
-        RpcAssignMat();
+        RpcAssignMat(playerNum);
     }
     [ClientRpc]
-    void RpcAssignMat() {
-        AssignMat();
+    void RpcAssignMat(int playerNum) {
+        AssignMat(playerNum);
     }
-    void AssignMat()
+    void AssignMat(int playerNum)
     {
         //Find material from player index
-        switch(pIndex) {
+        switch(playerNum) {
             case 0:
                 material = player1mat;
                 break;

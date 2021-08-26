@@ -161,16 +161,16 @@ public class Missile : NetworkBehaviour
             }
         } else if (collider.gameObject.tag == "Wall")
         {
-            if (state == 0) {return;}
             state = 0;
             direction = direction * -1;
             gameObject.GetComponentInChildren<Renderer>().material = missileMat;
-            confusionTimer = confusionTime;
             if (collider.gameObject.name != "Wall")
             {
                 am.PlaySFX("missileHitWall");
                 Destroy(collider.gameObject);
             }
+            if (state == 0) {return;}
+            confusionTimer = confusionTime;
         }
     }
     private bool isAlivePlayer() {
