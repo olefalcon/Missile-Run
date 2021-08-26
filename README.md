@@ -1,5 +1,6 @@
 # Missile-Run
 Repo for unity build missile run game
+![MainMenu](https://github.com/olefalcon/Missile-Run/blob/main/image_2021-08-26_193109.png)
 ## How To Play
 #### Player Controls
 Each player controls 1 player figure. From the main camera, they look like circles. Use **W, A, S, and D** to move your character.
