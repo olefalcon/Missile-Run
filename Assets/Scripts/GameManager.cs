@@ -123,6 +123,11 @@ public class GameManager : NetworkBehaviour
             Time.timeScale -= Time.deltaTime * timeSlowScaling;
         }
     }
+    //Function to leave game
+    public void leaveGame() {
+        if (isServer) {NetworkManager.singleton.StopHost();}
+        else {NetworkManager.singleton.StopClient();}
+    }
     //Function to start a round
     [ClientRpc]
     public void StartRound()
