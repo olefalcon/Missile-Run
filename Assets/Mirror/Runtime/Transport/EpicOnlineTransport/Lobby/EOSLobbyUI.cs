@@ -32,11 +32,12 @@ public class EOSLobbyUI : EOSLobby {
 
     //when the lobby is successfully created, start the host
     private void OnCreateLobbySuccess(List<Attribute> attributes) {
+        Debug.Log("LobbySuccess");
         lobbyData = attributes;
         showPlayerList = true;
         showLobbyList = false;
 
-        GetComponent<NetworkManager>().StartHost();
+        NetworkManager.singleton.StartHost();
     }
 
     //when the user joined the lobby successfully, set network address and connect
@@ -45,9 +46,8 @@ public class EOSLobbyUI : EOSLobby {
         showPlayerList = true;
         showLobbyList = false;
 
-        NetworkManager netManager = GetComponent<NetworkManager>();
-        netManager.networkAddress = attributes.Find((x) => x.Data.Key == hostAddressKey).Data.Value.AsUtf8;
-        netManager.StartClient();
+        NetworkManager.singleton.networkAddress = attributes.Find((x) => x.Data.Key == hostAddressKey).Data.Value.AsUtf8;
+        NetworkManager.singleton.StartClient();
     }
 
     //callback for FindLobbiesSucceeded
@@ -59,9 +59,8 @@ public class EOSLobbyUI : EOSLobby {
 
     //when the lobby was left successfully, stop the host/client
     private void OnLeaveLobbySuccess() {
-        NetworkManager netManager = GetComponent<NetworkManager>();
-        netManager.StopHost();
-        netManager.StopClient();
+        NetworkManager.singleton.StopHost();
+        NetworkManager.singleton.StopClient();
     }
 
     private void OnGUI() {

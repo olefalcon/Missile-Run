@@ -68,11 +68,19 @@ public class RoomPlayer : NetworkBehaviour
         CmdPlayerReady(lm.playerNum);
         gameObject.GetComponent<NetworkRoomPlayer>().CmdChangeReadyState(true);
     }
+    public void unReadyUp() {
+        lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
+        CmdPlayerUnReady(lm.playerNum);
+        gameObject.GetComponent<NetworkRoomPlayer>().CmdChangeReadyState(false);
+    }
     //Command for players readying across the server
     [Command]
     public void CmdPlayerReady(int p) {
-        lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
         playerReadyRpc(p);
+    }
+    [Command]
+    public void CmdPlayerUnReady(int p) {
+        playerUnReadyRpc(p);
     }
     
     
@@ -80,6 +88,19 @@ public class RoomPlayer : NetworkBehaviour
     //Call from network manager when player readys up
     public void playerReadyRpc(int p)
     {
+        lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
         lm.playerReadyRpc(p);
+    }
+    [ClientRpc]
+    public void playerUnReadyRpc(int p)
+    {
+        lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
+        lm.playerUnReadyRpc(p);
+    }
+
+    [ClientRpc]
+    public void allReadyRpc() {
+        lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
+        lm.allPlayerReady();
     }
 }

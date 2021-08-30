@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public class Powerup : NetworkBehaviour
 {
@@ -14,16 +16,28 @@ public class Powerup : NetworkBehaviour
     public Material invisPlayerMat;
     public float glitchDelay;
     public GameObject glitchModulePrefab;
+    public float swapDelay;
+    public GameObject swapLinePrefab;
     public float shieldTime;
     private float lifespanTimer;
     [SyncVar]
     public int powerupType;
+    //materials for powerup
     public Material speedMat;
     public Material invisMat;
     public Material swapMat;
     public Material glitchMat;
     public Material shieldMat;
+    //images for powerup
+    public Texture speedImage;
+    public Texture invisImage;
+    public Texture swapImage;
+    public Texture glitchImage;
+    public Texture shieldImage;
+    //renderer
     public Renderer rend;
+    //image overlay
+    public RawImage icon;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +47,7 @@ public class Powerup : NetworkBehaviour
             AssignType();
         }
         AssignMat();
+        StartTween();
     }
 
     // Update is called once per frame
@@ -42,7 +57,12 @@ public class Powerup : NetworkBehaviour
         {
             Destroy(gameObject);
         }
-        transform.Rotate(new Vector3(1f, 1f, 1f)* Time.deltaTime * rotateSpeed, Space.World);
+    }
+
+    void StartTween() {
+        icon.rectTransform.DOScale(2f, 0.46875f).SetLoops(-1, LoopType.Restart).SetEase(Ease.OutQuint);
+        transform.DOScale(0.4f, 0.46875f).SetLoops(-1, LoopType.Restart).SetEase(Ease.OutQuint);
+        transform.DOLocalRotate(new Vector3(0f,45f,0f), 0.46875f).SetLoops(-1, LoopType.Incremental).SetEase(Ease.OutQuint);
     }
 
     void AssignType()
@@ -56,18 +76,23 @@ public class Powerup : NetworkBehaviour
         if (powerupType == 1)
         {
             rend.material = speedMat;
+            icon.texture = speedImage;
         } else if (powerupType == 2)
         {
             rend.material = swapMat;
+            icon.texture = swapImage;
         } else if (powerupType == 3)
         {
             rend.material = invisMat;
+            icon.texture = invisImage;
         } else if (powerupType == 4)
         {
             rend.material = glitchMat;
+            icon.texture = glitchImage;
         } else if (powerupType == 5)
         {
             rend.material = shieldMat;
+            icon.texture = shieldImage;
         }
     }
     [ClientRpc]
@@ -98,6 +123,10 @@ public class Powerup : NetworkBehaviour
                 }
                 if (farthestPlayer != player)
                 {
+                    GameObject swapLine = Instantiate(swapLinePrefab, Vector3.zero, Quaternion.identity);
+                    swapLine.GetComponent<SwapLine>().p1t = player.transform;
+                    swapLine.GetComponent<SwapLine>().p2t = farthestPlayer.transform;
+                    swapLine.GetComponent<SwapLine>().SetPos();
                     Vector3 farthestPlayerPos = farthestPlayer.transform.position;
                     Vector3 currentPlayerPos = player.transform.position;
                     farthestPlayer.transform.position = currentPlayerPos;

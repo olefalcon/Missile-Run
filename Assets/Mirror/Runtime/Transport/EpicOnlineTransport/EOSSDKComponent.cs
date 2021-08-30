@@ -6,6 +6,8 @@ using System;
 using System.Runtime.InteropServices;
 
 using UnityEngine;
+using UnityEngine.UI;
+using Mirror;
 
 /// <summary>
 /// Manages the Epic Online Services SDK
@@ -130,6 +132,8 @@ namespace EpicTransport {
                 return Instance.isConnecting;
             }
         }
+
+        
 
         protected static EOSSDKComponent instance;
         protected static EOSSDKComponent Instance {
@@ -293,6 +297,8 @@ namespace EpicTransport {
                 ConnectInterfaceLogin();
             } else if(Epic.OnlineServices.Common.IsOperationComplete(loginCallbackInfo.ResultCode)){
                 Debug.Log("Login returned " + loginCallbackInfo.ResultCode);
+            } else {
+                //Utility.displayError("102");
             }
         }
 
@@ -315,6 +321,7 @@ namespace EpicTransport {
                     connectInterfaceCredentialToken = token.AccessToken;
                 } else {
                     Debug.LogError("Failed to retrieve User Auth Token");
+                    //Utility.displayError("103");
                 }
             } else if (connectInterfaceCredentialType == Epic.OnlineServices.ExternalCredentialType.DeviceidAccessToken) {
                 loginOptions.UserLoginInfo = new Epic.OnlineServices.Connect.UserLoginInfo();

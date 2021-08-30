@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 
@@ -24,13 +27,17 @@ public class NewNetworkRoomManager : NetworkRoomManager
     public string playerName;
     //Lobby manager object
     public LobbyManager lm;
+    public RoomPlayer nrp;
     //vars for player names
     public string p1n = "";
     public string p2n = "";
     public string p3n = "";
     public string p4n = "";
     public int players = 0;
+    //coroutine
+    private IEnumerator coroutine;
 
+    
 
 
     #region Server Callbacks
@@ -128,7 +135,16 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// </summary>
     public override void OnRoomServerPlayersReady()
     {
-        base.OnRoomServerPlayersReady();
+        nrp = NetworkClient.connection.identity.GetComponent<RoomPlayer>();
+        nrp.allReadyRpc();
+        coroutine = readyDelayRoutine(3f);
+        StartCoroutine(coroutine);
+    }
+
+    private IEnumerator readyDelayRoutine(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        ServerChangeScene(GameplayScene);
     }
 
     /// <summary>
@@ -136,6 +152,7 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// <para>May be called multiple times while not ready players are joining</para>
     /// </summary>
     public override void OnRoomServerPlayersNotReady() { }
+
 
     #endregion
 
@@ -162,7 +179,9 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// This is called on the client when disconnected from a server.
     /// </summary>
     /// <param name="conn">The connection that disconnected.</param>
-    public override void OnRoomClientDisconnect(NetworkConnection conn) { }
+    public override void OnRoomClientDisconnect(NetworkConnection conn) {
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+    }
 
     /// <summary>
     /// This is called on the client when a client is started.

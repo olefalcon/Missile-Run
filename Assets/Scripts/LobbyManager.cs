@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -13,16 +15,16 @@ public class LobbyManager : MonoBehaviour
     //Player room object script (for ready changes)
     public RoomPlayer nrp;
     public NewNetworkRoomManager nm;
-    //Booleans for players ready status
-    private bool isP1Ready;
-    private bool isP2Ready;
-    private bool isP3Ready;
-    private bool isP4Ready;
     //Materials for lighting up player icons
     public Material player1mat;
     public Material player2mat;
     public Material player3mat;
     public Material player4mat;
+    //Images for ready up
+    public RawImage player1Ready;
+    public RawImage player2Ready;
+    public RawImage player3Ready;
+    public RawImage player4Ready;
     //Materials for dull non readied players
     public Material player1dullMat;
     public Material player2dullMat;
@@ -38,6 +40,11 @@ public class LobbyManager : MonoBehaviour
     public Text username2;
     public Text username3;
     public Text username4;
+    //buttons for ready up
+    public Button readyButton;
+    public Button unReadyButton;
+    public Button quitButton;
+    public Text allReadyText;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,9 +58,18 @@ public class LobbyManager : MonoBehaviour
 
     public void readyUp() {
         nrp = NetworkClient.connection.identity.GetComponent<RoomPlayer>();
+        readyButton.gameObject.SetActive(false);
+        unReadyButton.gameObject.SetActive(true);
         nrp.readyUp();
     }
+    public void unReadyUp() {
+        nrp = NetworkClient.connection.identity.GetComponent<RoomPlayer>();
+        unReadyButton.gameObject.SetActive(false);
+        readyButton.gameObject.SetActive(true);
+        nrp.unReadyUp();
+    }
     public void leaveRoom() {
+        NetworkManager.singleton.StopHost();
         NetworkManager.singleton.StopClient();
     }
 
@@ -72,24 +88,45 @@ public class LobbyManager : MonoBehaviour
     }
     //return from room player command that rpcs on all clients
     public void playerReadyRpc(int p) {
+        Debug.Log("Player Ready Rpc p=" + p);
         switch(p)
         {
+            case 0:
+                player1Ready.gameObject.SetActive(true);
+                break;
             case 1:
-                isP1Ready = true;
-                player1block.GetComponent<Renderer>().material = player1mat;
+                player2Ready.gameObject.SetActive(true);
                 break;
             case 2:
-                isP2Ready = true;
-                player2block.GetComponent<Renderer>().material = player2mat;
+                player3Ready.gameObject.SetActive(true);
                 break;
             case 3:
-                isP3Ready = true;
-                player3block.GetComponent<Renderer>().material = player3mat;
-                break;
-            case 4:
-                isP4Ready = true;
-                player4block.GetComponent<Renderer>().material = player4mat;
+                player4Ready.gameObject.SetActive(true);
                 break;
         }
+    }
+    public void playerUnReadyRpc(int p) {
+        switch(p)
+        {
+            case 0:
+                player1Ready.gameObject.SetActive(false);
+                break;
+            case 1:
+                player2Ready.gameObject.SetActive(false);
+                break;
+            case 2:
+                player3Ready.gameObject.SetActive(false);
+                break;
+            case 3:
+                player4Ready.gameObject.SetActive(false);
+                break;
+        }
+    }
+    public void allPlayerReady() {
+        unReadyButton.gameObject.SetActive(false);
+        readyButton.gameObject.SetActive(false);
+        quitButton.gameObject.SetActive(false);
+        allReadyText.gameObject.SetActive(true);
+        allReadyText.DOText("Game Starting...", 0.46875f*2f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
     }
 }

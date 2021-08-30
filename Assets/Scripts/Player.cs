@@ -174,7 +174,8 @@ public class Player : NetworkBehaviour
     }
     private void OnTriggerEnter(Collider collider)
     {
-        if (!isServer || !isLocalPlayer) {return;}
+        if (!isServer) {return;}
+        if (!isLocalPlayer && collider.GetComponent<PlayerAI>() == false) {return;}
         if (collider.gameObject.tag == "Powerup")
         {
             if (hasPowerupEffect == false)

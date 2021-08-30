@@ -122,10 +122,7 @@ public class Missile : NetworkBehaviour
     {
         Vector3 oldPos = transform.position;
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
-        if (state == 1) {
-            transform.LookAt(target.transform, Vector3.up);
-        }
-        
+        transform.LookAt(transform.position + direction, Vector3.up);
     }
 
     public void ChangeTarget(GameObject newTarget)
@@ -161,6 +158,9 @@ public class Missile : NetworkBehaviour
             }
         } else if (collider.gameObject.tag == "Wall")
         {
+            if (state != 0) {
+            confusionTimer = confusionTime;
+            }
             state = 0;
             direction = direction * -1;
             gameObject.GetComponentInChildren<Renderer>().material = missileMat;
@@ -169,8 +169,6 @@ public class Missile : NetworkBehaviour
                 am.PlaySFX("missileHitWall");
                 Destroy(collider.gameObject);
             }
-            if (state == 0) {return;}
-            confusionTimer = confusionTime;
         }
     }
     private bool isAlivePlayer() {
