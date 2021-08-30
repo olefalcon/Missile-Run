@@ -199,15 +199,21 @@ public class GameManager : NetworkBehaviour
         players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
+            if (isServer) {
+                Debug.Log(player.name);
+            }
             if (player.GetComponent<PlayerAI>() != null && isServer) {
                 Destroy(player);
-                return;
+            } else {
+                //Move player on local client because of client authority movement
+                if (player.GetComponent<NetworkIdentity>().isLocalPlayer) {
+                    player.transform.position = playerSpawns[player.GetComponent<Player>().pIndex].position;
+                }
+                if (isServer) {
+                    player.GetComponent<Player>().isAlive = true;
+                }
+                player.transform.GetChild(0).gameObject.SetActive(true);
             }
-            if (isServer) {
-                player.transform.position = nm.GetStartPosition().position;
-                player.GetComponent<Player>().isAlive = true;
-            }
-            player.transform.GetChild(0).gameObject.SetActive(true);
         }
         if (isServer) {
             
@@ -234,7 +240,7 @@ public class GameManager : NetworkBehaviour
     //Function to create player
     public void CreatePlayerAI(int index)
     {
-        GameObject ai = (Instantiate(playerAIPrefab, nm.GetStartPosition().position, Quaternion.identity));
+        GameObject ai = (Instantiate(playerAIPrefab, playerSpawns[index].position, Quaternion.identity));
         ai.GetComponent<Player>().material = playerMaterials[index];
         ai.GetComponent<Player>().pIndex = index;
         NetworkServer.Spawn(ai);

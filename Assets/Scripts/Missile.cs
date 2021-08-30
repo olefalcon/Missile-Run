@@ -43,7 +43,10 @@ public class Missile : NetworkBehaviour
         startDelayTimer = startDelay;
         players = GameObject.FindGameObjectsWithTag("Player");
     }
-
+    [ClientRpc]
+    public void MusicRpc() {
+        am.PlaySFX("music");
+    }
     // Update is called once per frame
     void Update()
     {
@@ -51,10 +54,13 @@ public class Missile : NetworkBehaviour
         {
             if (startDelayTimer <= 0)
             {
+                players = GameObject.FindGameObjectsWithTag("Player");
                 int startTarget = Random.Range(0,players.Length);
                 target = players[startTarget];
                 state = 1;
-                am.PlaySFX("music");
+                if (isServer) {
+                    MusicRpc();
+                }
             } else
             {
                 startDelayTimer -= Time.deltaTime;
@@ -62,7 +68,7 @@ public class Missile : NetworkBehaviour
         }
         else if (!isServer) {
             //Clients only need to change the material of the rocket
-            if (state == 2) {
+            if (state == 0) {
                 gameObject.GetComponentInChildren<Renderer>().material = missileMat;
             } else{
                 gameObject.GetComponentInChildren<Renderer>().material = target.GetComponentInChildren<Renderer>().material;
@@ -131,7 +137,14 @@ public class Missile : NetworkBehaviour
         //Change missile's material to new target's
         gameObject.GetComponentInChildren<Renderer>().material = newTarget.GetComponentInChildren<Renderer>().material;
     }
-
+    [ClientRpc]
+    void DeathSFXRpc() {
+        am.PlaySFX("playerDeath");
+    }
+    [ClientRpc]
+    void MissileHitSFXRpc() {
+        am.PlaySFX("missileHitWall");
+    }
     private void OnTriggerEnter(Collider collider)
     {
         if (!isServer) {return;}
@@ -147,7 +160,7 @@ public class Missile : NetworkBehaviour
             {
                 collider.gameObject.GetComponent<Player>().Die();
                 collider.gameObject.GetComponent<Player>().isAlive = false;
-                am.PlaySFX("playerDeath");
+                DeathSFXRpc();
             }
             closestDist = 1000f;
             //Check if last player was killed
@@ -166,7 +179,7 @@ public class Missile : NetworkBehaviour
             gameObject.GetComponentInChildren<Renderer>().material = missileMat;
             if (collider.gameObject.name != "Wall")
             {
-                am.PlaySFX("missileHitWall");
+                MissileHitSFXRpc();
                 Destroy(collider.gameObject);
             }
         }

@@ -136,6 +136,8 @@ public class Player : NetworkBehaviour
     {
         ps.Play();
         gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        isInvis = false;
+        gameObject.GetComponentInChildren<Renderer>().material = material;
         //is alive has to be set on the missile script because of delay
         //isAlive = false;
     }
@@ -174,8 +176,8 @@ public class Player : NetworkBehaviour
     }
     private void OnTriggerEnter(Collider collider)
     {
-        if (!isServer) {return;}
         if (!isLocalPlayer && collider.GetComponent<PlayerAI>() == false) {return;}
+        if (!isServer && collider.GetComponent<PlayerAI>() == true) {return;}
         if (collider.gameObject.tag == "Powerup")
         {
             if (hasPowerupEffect == false)

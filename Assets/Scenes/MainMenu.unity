@@ -1509,7 +1509,7 @@ MonoBehaviour:
   PersistNetworkManagerToOfflineScene: 0
   runInBackground: 1
   autoStartServerBuild: 1
-  serverTickRate: 30
+  serverTickRate: 60
   offlineScene: Assets/Scenes/MainMenu.unity
   onlineScene: Assets/Scenes/Room.unity
   transport: {fileID: 347348415}
@@ -3100,9 +3100,29 @@ PrefabInstance:
       propertyPath: m_Text
       value: Volume
       objectReference: {fileID: 0}
+    - target: {fileID: 11466182, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
+      propertyPath: m_MaxValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466182, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466182, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
+      propertyPath: m_MinValue
+      value: -80
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466182, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1614233437}
+    - target: {fileID: 11466182, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetVolume
+      objectReference: {fileID: 0}
     - target: {fileID: 22431974, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.41
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22431974, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3110,11 +3130,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22445768, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.41
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22445768, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.41
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22445768, guid: d2c67c9f8ecea45ad946dc423474b514, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3212,6 +3232,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 967664851}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &967664853 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 11466182, guid: d2c67c9f8ecea45ad946dc423474b514,
+    type: 3}
+  m_PrefabInstance: {fileID: 967664851}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &975596069
 GameObject:
   m_ObjectHideFlags: 0
@@ -3914,6 +3946,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MusicToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 149228, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 11447126, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
       propertyPath: m_IsOn
       value: 1
@@ -4486,7 +4522,8 @@ AudioSource:
   m_GameObject: {fileID: 1287761433}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 0f80c6c677b3a8f49a6bd40f3773e848,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 0b6693288ba41a04882a9003f3b8cb97, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -5517,6 +5554,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SFXToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 149228, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 11447126, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
       propertyPath: m_IsOn
       value: 1
@@ -5734,7 +5775,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: v0.0.1
+  m_Text: v0.0.2
 --- !u!222 &1568355655
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5950,10 +5991,12 @@ MonoBehaviour:
   devAuthScreen: {fileID: 1722378164}
   developerScreen: {fileID: 1318327885}
   warningsScreen: {fileID: 1462237631}
+  amixer: {fileID: 24100000, guid: 0f80c6c677b3a8f49a6bd40f3773e848, type: 2}
   hostGameButton: {fileID: 1690443892}
   joinGameButton: {fileID: 1048685224}
   settingsGameButton: {fileID: 1011137560}
   quitGameButton: {fileID: 606445074}
+  volumeSlider: {fileID: 967664853}
   splashScreen: {fileID: 1536205628}
   hostMenu: {fileID: 1222081582}
   joinMenu: {fileID: 1833021056}

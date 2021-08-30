@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using DG.Tweening;
 
 public class MenuManager : MonoBehaviour
@@ -20,11 +21,14 @@ public class MenuManager : MonoBehaviour
     public Image devAuthScreen;
     public Image developerScreen;
     public Image warningsScreen;
+    //Audio mixer
+    public AudioMixer amixer;
     //Menu buttons
     public Button hostGameButton;
     public Button joinGameButton;
     public Button settingsGameButton;
     public Button quitGameButton;
+    public Slider volumeSlider;
     //Menu panels
     public Image splashScreen;
     public Image hostMenu;
@@ -102,6 +106,9 @@ public class MenuManager : MonoBehaviour
         eos.devAuthToolCredentialName = devAuthField.text;
         EOSSDKComponent.Initialize();
         devAuthScreen.gameObject.SetActive(false);
+    }
+    public void SetVolume() {
+        amixer.SetFloat("masterVol", volumeSlider.value);
     }
     /*
     public void animateMenuButtons() {
