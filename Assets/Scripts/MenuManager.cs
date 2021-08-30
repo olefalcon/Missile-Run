@@ -48,6 +48,8 @@ public class MenuManager : MonoBehaviour
         preGameScreenTimer = preGameScreenTime;
         nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
         eosLobby = GameObject.Find("EOSManager").GetComponent<EOSLobby>();
+        float vol = PlayerPrefs.GetFloat("masterVol", 0f);
+        amixer.SetFloat("masterVol", vol);
     }
 
     void Update () {
@@ -79,6 +81,7 @@ public class MenuManager : MonoBehaviour
         settingsMenu.gameObject.SetActive(true);
     }
     public void AcceptSettings() {
+        PlayerPrefs.SetFloat("masterVol", volumeSlider.value);
         settingsMenu.gameObject.SetActive(false);
     }
     public void QuitGame() {
