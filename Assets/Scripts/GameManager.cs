@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameManager : NetworkBehaviour
 {
@@ -63,10 +64,12 @@ public class GameManager : NetworkBehaviour
     public Text player3ScoreText;
     public int player4Score;
     public Text player4ScoreText;
+    public Text statusText;
     //Overlays
     public Image loadingScreen;
     //Player Data
     public GameObject[] players;
+    public bool[] isPlayerAI;
     public Transform[] playerSpawns;
     public Material[] playerMaterials;
     public Material[] powerupMaterials;
@@ -79,6 +82,7 @@ public class GameManager : NetworkBehaviour
         SetupArrays();
         CompilePlayerSpawns();
         CompilePlayerMaterials();
+        CompileIsPlayerAI();
         startDelayTimer = startDelay;
         //We will start the round when all clients are loaded in
         //StartRound();
@@ -128,6 +132,16 @@ public class GameManager : NetworkBehaviour
         if (isServer) {NetworkManager.singleton.StopHost();}
         else {NetworkManager.singleton.StopClient();}
     }
+    //Function when a player leaves
+    public void playerLeave(int p, string name) {
+        isPlayerAI[p] = true;
+        playerLeaveRpc(name);
+    }
+    [ClientRpc]
+    public void playerLeaveRpc(string name) {
+        string sText = name + " has left the lobby!";
+        statusText.DOText(sText, 0.46875f*4f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.InOutSine);
+    }
     //Function to start a round
     [ClientRpc]
     public void StartRound()
@@ -139,8 +153,10 @@ public class GameManager : NetworkBehaviour
         if (!isServer) {return;}
         CreateMissile();
         int numPlayers = nm.numPlayers;
-        for (int i=numPlayers;i<4;i++) {
-            CreatePlayerAI(i);
+        for (int i=0;i<4;i++) {
+            if (isPlayerAI[i]) {
+                CreatePlayerAI(i);
+            }
         }
         //CreatePlayer(0);
         //CreatePlayer(1);
@@ -159,13 +175,21 @@ public class GameManager : NetworkBehaviour
         //End of round cam
         //cam.transform.position = new Vector3(missile.transform.position.x, 10f, missile.transform.position.z);
         //cam.orthographicSize = camMaxZoom;
-        string winnerColor = indexToColor(winnerIndex);
-        roundWinnerText.text = winnerColor + " Wins!";
+        if (winnerIndex == -1) {
+            roundWinnerText.text = "Nobody won! LMAO";
+        } else {
+            string winnerColor = indexToColor(winnerIndex);
+            roundWinnerText.text = winnerColor + " Wins!";
+        }
         roundWinnerBanner.transform.localPosition = new Vector3(181f, 0f, 0f);
+        am.StopMusic();
+        am.PlaySFX("roundEnd");
         //Score Handling
         Text winnerScoreText = player1ScoreText;
         int winnerScore = 0;
         switch (winnerIndex) {
+            case -1:
+                return;
             case 0:
                 ++player1Score;
                 winnerScoreText = player1ScoreText;
@@ -189,8 +213,6 @@ public class GameManager : NetworkBehaviour
         }
         winnerScoreText.text = winnerScore.ToString();
         //EndRound sound
-        am.StopMusic();
-        am.PlaySFX("roundEnd");
     }
     //Function when round is restarting
     [ClientRpc]
@@ -199,9 +221,6 @@ public class GameManager : NetworkBehaviour
         players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
-            if (isServer) {
-                Debug.Log(player.name);
-            }
             if (player.GetComponent<PlayerAI>() != null && isServer) {
                 Destroy(player);
             } else {
@@ -259,6 +278,7 @@ public class GameManager : NetworkBehaviour
         players = new GameObject[4];
         playerSpawns = new Transform[4];
         playerMaterials = new Material[4];
+        isPlayerAI = new bool[4];
     }
     //Function to compile player spawns
     public void CompilePlayerSpawns()
@@ -275,6 +295,16 @@ public class GameManager : NetworkBehaviour
         playerMaterials[1] = player2mat;
         playerMaterials[2] = player3mat;
         playerMaterials[3] = player4mat;
+    }
+    public void CompileIsPlayerAI() {
+        int numPlayers = nm.numPlayers;
+        for (int i=0; i<4; i++) {
+            if (i>=numPlayers) {
+                isPlayerAI[i] = true;
+            } else {
+                isPlayerAI[i] = false;
+            }
+        }
     }
     //Function to spawn pillars
     public void SpawnPillars()

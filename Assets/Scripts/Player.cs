@@ -30,6 +30,8 @@ public class Player : NetworkBehaviour
     public Material player2mat;
     public Material player3mat;
     public Material player4mat;
+    [SyncVar]
+    public string playerName;
 
     public Vector3 direction;
     public Vector3 spawnLocation;
@@ -38,7 +40,7 @@ public class Player : NetworkBehaviour
     {
         if (isLocalPlayer) {
             NewNetworkRoomManager nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
-            DeterminePlayerIndex(nm.playerNum);
+            DeterminePlayerIndex(nm.playerNum, nm.playerName);
         } else {
             AssignMat(pIndex);
         }
@@ -135,15 +137,29 @@ public class Player : NetworkBehaviour
     public void Die()
     {
         ps.Play();
+        //Reset everything about the player so no lasting effects occur
         gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        //Remove speed trail and enable normal trail
+        transform.GetChild(4).gameObject.SetActive(false);
+        transform.GetChild(2).gameObject.SetActive(true);
+        //Remove shield
+        transform.GetChild(3).gameObject.SetActive(false);
+        //Remove glitch marks
+        if (glitchModule != null) {
+            Destroy(glitchModule);
+        }
+        hasPowerupEffect = false;
+        speed = baseSpeed;
         isInvis = false;
+        hasShield = false;
         gameObject.GetComponentInChildren<Renderer>().material = material;
         //is alive has to be set on the missile script because of delay
         //isAlive = false;
     }
     [Command]
-    void DeterminePlayerIndex(int playerNum) {
+    void DeterminePlayerIndex(int playerNum, string name) {
         pIndex = playerNum;
+        playerName = name;
         RpcAssignMat(playerNum);
     }
     [ClientRpc]

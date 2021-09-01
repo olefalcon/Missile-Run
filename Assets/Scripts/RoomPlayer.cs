@@ -8,7 +8,9 @@ public class RoomPlayer : NetworkBehaviour
     public LobbyManager lm;
     public NewNetworkRoomManager nm;
     //public SyncList<string> playerNames = new SyncList<string>();
-    
+    [SyncVar]
+    public int playerNum;
+    [SyncVar]
     public string playerName;
     //When a room player is created player has joined the room
     void Start() {
@@ -22,6 +24,7 @@ public class RoomPlayer : NetworkBehaviour
     //Clients command when they join room
     [Command]
     public void playerJoin(string name) {
+        playerName = name;
         lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
         nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
         ++nm.players;
@@ -44,6 +47,7 @@ public class RoomPlayer : NetworkBehaviour
         _playerNames.Add(nm.p2n);
         _playerNames.Add(nm.p3n);
         _playerNames.Add(nm.p4n);
+        playerNum = nm.players-1;
         playerNumTargetRpc(connectionToClient, nm.players-1);
         playerJoinRpc(_playerNames);
     }
@@ -102,5 +106,38 @@ public class RoomPlayer : NetworkBehaviour
     public void allReadyRpc() {
         lm = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
         lm.allPlayerReady();
+    }
+
+
+    //functions for when a player leaves
+    [ClientRpc]
+    public void playerLeave(int p, string name) {
+        --nm.players;
+        switch(p) {
+            case 1: //player 2 leaves
+                nm.p2n = nm.p3n;
+                nm.p3n = nm.p4n;
+                nm.p4n = "";
+                if (playerNum > 1) {
+                    --playerNum;
+                }
+                break;
+            case 2: //player 3 leaves
+                nm.p3n = nm.p4n;
+                nm.p4n = "";
+                if (playerNum > 2) {
+                    --playerNum;
+                }
+                break;
+            case 3: //player 4 leaves
+                nm.p4n = "";
+                break;
+        }
+        List<string> _playerNames = new List<string>();
+        _playerNames.Add(nm.p1n);
+        _playerNames.Add(nm.p2n);
+        _playerNames.Add(nm.p3n);
+        _playerNames.Add(nm.p4n);
+        lm.playerLeaveRpc(p, name, _playerNames);
     }
 }

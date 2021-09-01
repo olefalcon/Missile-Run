@@ -57,6 +57,9 @@ public class Missile : NetworkBehaviour
                 players = GameObject.FindGameObjectsWithTag("Player");
                 int startTarget = Random.Range(0,players.Length);
                 target = players[startTarget];
+                FindTarget();
+                transform.LookAt(target.transform.position, Vector3.up);
+                direction = target.transform.position - transform.position;
                 state = 1;
                 if (isServer) {
                     MusicRpc();
@@ -77,38 +80,7 @@ public class Missile : NetworkBehaviour
         }
         else if (state == 1)
         {
-            closestDist = 100;
-            //If current target is alive set closest dist to its position
-            if (target.GetComponent<Player>().isAlive == true)
-            {
-                closestDist = Vector3.Distance(target.transform.position, transform.position);
-            }
-            foreach (GameObject player in players)
-            {
-                //Player will be null for 1 update cycle when ai spawns between rounds
-                //This check prevents a non game breaking missingReferenceException
-                if (player == null) {return;}
-                float newDist = Vector3.Distance(player.transform.position, transform.position);
-                //Compare each player that is alive and not invisible's distance to the current target
-                if (player.GetComponent<Player>().isAlive == true && newDist < closestDist && player.GetComponent<Player>().isInvis == false)
-                {
-                    target = player;
-                    closestDist = newDist;
-                }
-            }
-            //If all available targets are invis when missile kills player
-            if (target.GetComponent<Player>().isAlive == false || target.GetComponentInChildren<Player>().isInvis == true)
-            {
-                gameObject.GetComponentInChildren<Renderer>().material = missileMat;
-            }
-            else
-            {
-                ChangeTarget(target);
-                float lerpRatio = acceleration;
-                oldDirection = direction;
-                direction = (target.transform.position - transform.position).normalized;
-                direction = Vector3.Lerp(oldDirection, direction, lerpRatio).normalized;
-            }
+            FindTarget();
         } else if (state == 0)
         {
             if (confusionTimer <= 0)
@@ -129,6 +101,57 @@ public class Missile : NetworkBehaviour
         Vector3 oldPos = transform.position;
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
         transform.LookAt(transform.position + direction, Vector3.up);
+    }
+
+    public void FindTarget() {
+        closestDist = 100;
+        players = GameObject.FindGameObjectsWithTag("Player");
+        //If player leaves while being the target
+        if (target == null) {
+            target = players[1];
+            //If player was last player
+            bool lastPlayer = true;
+            foreach (GameObject player in players) {
+                if (player.GetComponent<Player>().isAlive) {
+                    target = player;
+                    lastPlayer = false;
+                }
+            }
+            if (lastPlayer) {
+                gameManager.GetComponent<GameManager>().EndRound(-1);
+            }
+        }
+        //If current target is alive set closest dist to its position
+        if (target.GetComponent<Player>().isAlive == true)
+        {
+            closestDist = Vector3.Distance(target.transform.position, transform.position);
+        }
+        foreach (GameObject player in players)
+        {
+            //Player will be null for 1 update cycle when ai spawns between rounds
+            //This check prevents a non game breaking missingReferenceException
+            if (player == null) {return;}
+            float newDist = Vector3.Distance(player.transform.position, transform.position);
+            //Compare each player that is alive and not invisible's distance to the current target
+            if (player.GetComponent<Player>().isAlive == true && newDist < closestDist && player.GetComponent<Player>().isInvis == false)
+            {
+                target = player;
+                closestDist = newDist;
+            }
+        }
+        //If all available targets are invis when missile kills player
+        if (target.GetComponent<Player>().isAlive == false || target.GetComponentInChildren<Player>().isInvis == true)
+        {
+            gameObject.GetComponentInChildren<Renderer>().material = missileMat;
+        }
+        else
+        {
+            ChangeTarget(target);
+            float lerpRatio = acceleration;
+            oldDirection = direction;
+            direction = (target.transform.position - transform.position).normalized;
+            direction = Vector3.Lerp(oldDirection, direction, lerpRatio).normalized;
+        }
     }
 
     public void ChangeTarget(GameObject newTarget)
@@ -166,7 +189,6 @@ public class Missile : NetworkBehaviour
             //Check if last player was killed
             if (!isAlivePlayer())
             {
-                Debug.Log("no more players alive <3");
                 gameManager.GetComponent<GameManager>().EndRound(collider.gameObject.GetComponent<Player>().pIndex);
             }
         } else if (collider.gameObject.tag == "Wall")

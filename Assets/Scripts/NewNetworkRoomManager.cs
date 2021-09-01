@@ -22,6 +22,11 @@ using Mirror;
 /// </summary>
 public class NewNetworkRoomManager : NetworkRoomManager
 {
+    //State Trackers
+    public bool isLobby;
+    public bool isGame;
+    //MainMenuTrackers
+    public bool hasMenuOnce;
     //Player tracking info
     public int playerNum;
     public string playerName;
@@ -37,7 +42,8 @@ public class NewNetworkRoomManager : NetworkRoomManager
     //coroutine
     private IEnumerator coroutine;
 
-    
+    public Image errorPanel;
+    public Text errorText;
 
 
     #region Server Callbacks
@@ -46,6 +52,8 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// This is called on the server when the server is started - including when a host is started.
     /// </summary>
     public override void OnRoomStartServer() {
+        isLobby = true;
+        isGame = false;
     }
 
     /// <summary>
@@ -74,7 +82,28 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// This is called on the server when a client disconnects.
     /// </summary>
     /// <param name="conn">The connection that disconnected.</param>
-    public override void OnRoomServerDisconnect(NetworkConnection conn) { }
+    public override void OnRoomServerDisconnect(NetworkConnection conn) {
+        
+    }
+
+    public override void OnServerDisconnect(NetworkConnection conn) {
+        if (isLobby) {
+            RoomPlayer rp = conn.identity.GetComponent<RoomPlayer>();
+            int playerNum = rp.playerNum;
+            string playerName = rp.playerName;
+            nrp = NetworkClient.connection.identity.GetComponent<RoomPlayer>();
+            nrp.playerLeave(playerNum, playerName);
+            Destroy(conn.identity.gameObject);
+        } else if (isGame) {
+            Player p = conn.identity.GetComponent<Player>();
+            int playerNum = p.pIndex;
+            string playerName = p.playerName;
+            GameManager gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+            gm.playerLeave(playerNum, playerName);
+            Destroy(conn.identity.gameObject);
+        }
+        
+    }
 
     /// <summary>
     /// This is called on the server when a networked scene finishes loading.
@@ -145,6 +174,8 @@ public class NewNetworkRoomManager : NetworkRoomManager
     {
         yield return new WaitForSeconds(waitTime);
         ServerChangeScene(GameplayScene);
+        isLobby = false;
+        isGame = true;
     }
 
     /// <summary>
@@ -205,6 +236,14 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// <para>This could be because the room is full, or the connection is not allowed to have more players.</para>
     /// </summary>
     public override void OnRoomClientAddPlayerFailed() { }
+
+    public override void OnClientError(NetworkConnection conn, int errorCode) {
+        errorPanel = GameObject.Find("ErrorScreen").GetComponent<Image>();
+        errorText = GameObject.Find("ErrorText").GetComponent<Text>();
+        errorPanel.gameObject.SetActive(true);
+        errorText.text = "ERROR CODE " + errorCode.ToString();
+        Debug.Log("ERROR CODE " + errorCode.ToString());
+    }
 
     #endregion
 

@@ -45,10 +45,20 @@ public class MenuManager : MonoBehaviour
     public EOSLobby eosLobby;
 
     void Start() {
+        //Reset timescale in case of leaving game during end round slowdown
+        Time.timeScale = 1f;
         preGameScreenTimer = preGameScreenTime;
         nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
+        //if you have been at the menu once dont play intro things over and over again
+        if (Globals.hasMenuOnce == true) {
+            developerScreen.gameObject.SetActive(false);
+            warningsScreen.gameObject.SetActive(false);
+        } else {
+            Globals.hasMenuOnce = true;
+        }
         eosLobby = GameObject.Find("EOSManager").GetComponent<EOSLobby>();
         float vol = PlayerPrefs.GetFloat("masterVol", 0f);
+        volumeSlider.value = vol;
         amixer.SetFloat("masterVol", vol);
     }
 
@@ -69,11 +79,17 @@ public class MenuManager : MonoBehaviour
     public void HostGame()
     {
         nm.playerName = hostNameField.text;
+        if (nm.playerName == "") {
+            assignEmptyName();
+        }
         NetworkManager.singleton.StartHost();
     }
     public void JoinGame()
     {
         nm.playerName = joinNameField.text;
+        if (nm.playerName == "") {
+            assignEmptyName();
+        }
         NetworkManager.singleton.networkAddress = joinIPField.text;
         NetworkManager.singleton.StartClient();
     }
@@ -112,6 +128,9 @@ public class MenuManager : MonoBehaviour
     }
     public void SetVolume() {
         amixer.SetFloat("masterVol", volumeSlider.value);
+    }
+    public void assignEmptyName() {
+        nm.playerName = "runner";
     }
     /*
     public void animateMenuButtons() {

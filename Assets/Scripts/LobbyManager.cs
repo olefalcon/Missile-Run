@@ -45,6 +45,7 @@ public class LobbyManager : MonoBehaviour
     public Button unReadyButton;
     public Button quitButton;
     public Text allReadyText;
+    public Text statusText;
     // Start is called before the first frame update
     void Start()
     {
@@ -80,11 +81,7 @@ public class LobbyManager : MonoBehaviour
     }
     //Return from room player command that rpcs on all clients
     public void playerJoinRpc(List<string> _playerNames) {
-        playerNames = _playerNames;
-        username1.text = playerNames[0];
-        username2.text = playerNames[1];
-        username3.text = playerNames[2];
-        username4.text = playerNames[3];
+        updateLobbyNames(_playerNames);
     }
     //return from room player command that rpcs on all clients
     public void playerReadyRpc(int p) {
@@ -129,4 +126,22 @@ public class LobbyManager : MonoBehaviour
         allReadyText.gameObject.SetActive(true);
         allReadyText.DOText("Game Starting...", 0.46875f*2f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
     }
+
+
+    //Feedback from server for client leaving
+    public void playerLeaveRpc(int p, string name, List<string> playerNames) {
+        updateLobbyNames(playerNames);
+        string sText = name + " has left the lobby!";
+        statusText.DOText(sText, 0.46875f*4f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.InOutSine);
+    }
+
+    //Update player names from lobby
+    public void updateLobbyNames(List<string> _playerNames) {
+        playerNames = _playerNames;
+        username1.text = playerNames[0];
+        username2.text = playerNames[1];
+        username3.text = playerNames[2];
+        username4.text = playerNames[3];
+    }
+
 }
