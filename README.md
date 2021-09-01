@@ -2,7 +2,10 @@
 Repo for unity build missile run game
 ![MainMenu](https://github.com/olefalcon/Missile-Run/blob/main/image_2021-08-26_193109.png)
 ## How To Install
-1. Navigate to releases (https://github.com/olefalcon/Missile-Run/releases) or to the itch.io page (https://olefalcon.itch.io/missile-run).
+Itch.io page (easy)
+(https://olefalcon.itch.io/missile-run)
+Manual Install
+1. Navigate to releases (https://github.com/olefalcon/Missile-Run/releases).
 2. Select the most recent release.
 3. Download the zip file named Missile Run v.(release version).
 4. Unzip the file into a folder and run the executable.
