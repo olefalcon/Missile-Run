@@ -16,6 +16,7 @@ public class PlayerInput : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerIndex = 0;
         gm = GameObject.Find("GameManager");
         settings = gm.GetComponent<Settings>();
         if (playerIndex == 0) {
@@ -23,7 +24,7 @@ public class PlayerInput : NetworkBehaviour
             leftInput = settings.leftInput;
             downInput = settings.downInput;
             rightInput = settings.rightInput;  
-        } else if (playerIndex == 1) {
+        } else if (playerIndex == 1) { //later for implementing local mp
             upInput = settings.p2UpInput;
             leftInput = settings.p2LeftInput;
             downInput = settings.p2DownInput;

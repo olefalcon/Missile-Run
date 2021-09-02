@@ -92,6 +92,7 @@ public class NewNetworkRoomManager : NetworkRoomManager
             int playerNum = rp.playerNum;
             string playerName = rp.playerName;
             nrp = NetworkClient.connection.identity.GetComponent<RoomPlayer>();
+            Debug.Log("TO SERVER: Player " + playerNum + " has left the lobby");
             nrp.playerLeave(playerNum, playerName);
             Destroy(conn.identity.gameObject);
         } else if (isGame) {
@@ -99,6 +100,7 @@ public class NewNetworkRoomManager : NetworkRoomManager
             int playerNum = p.pIndex;
             string playerName = p.playerName;
             GameManager gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+            Debug.Log("TO SERVER: Player " + playerNum + " has left the game");
             gm.playerLeave(playerNum, playerName);
             Destroy(conn.identity.gameObject);
         }
@@ -210,7 +212,9 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// This is called on the client when disconnected from a server.
     /// </summary>
     /// <param name="conn">The connection that disconnected.</param>
-    public override void OnRoomClientDisconnect(NetworkConnection conn) {
+    public override void OnClientDisconnect(NetworkConnection conn) {
+        Debug.Log("Client has lost connection to Server! ...OnRoomClientDisconnect()");
+        StopClient();
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 

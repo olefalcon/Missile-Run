@@ -55,6 +55,7 @@ public class MenuManager : MonoBehaviour
     void Start() {
         //Reset timescale in case of leaving game during end round slowdown
         Time.timeScale = 1f;
+        DOTween.logBehaviour = LogBehaviour.ErrorsOnly;
         preGameScreenTimer = preGameScreenTime;
         nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
         //if you have been at the menu once dont play intro things over and over again
@@ -92,7 +93,7 @@ public class MenuManager : MonoBehaviour
         if (nm.playerName == "") {
             assignEmptyName();
         }
-        nm.playerName = nm.playerName.Substring(0,12);
+        nm.playerName = nm.playerName.Substring(0,Mathf.Min(12, nm.playerName.Length));
         NetworkManager.singleton.StartHost();
     }
     public void JoinGame()
@@ -101,7 +102,7 @@ public class MenuManager : MonoBehaviour
         if (nm.playerName == "") {
             assignEmptyName();
         }
-        nm.playerName = nm.playerName.Substring(0,12);
+        nm.playerName = nm.playerName.Substring(0,Mathf.Min(12, nm.playerName.Length));
         NetworkManager.singleton.networkAddress = joinIPField.text;
         NetworkManager.singleton.StartClient();
     }

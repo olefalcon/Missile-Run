@@ -139,7 +139,8 @@ public class GameManager : NetworkBehaviour
     }
     [ClientRpc]
     public void playerLeaveRpc(string name) {
-        string sText = name + " has left the lobby!";
+        string sText = name + " has left the game!";
+        Debug.Log("TO CLIENT: " + sText);
         statusText.DOText(sText, 0.46875f*4f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.InOutSine);
     }
     //Function to start a round
@@ -232,6 +233,7 @@ public class GameManager : NetworkBehaviour
                     player.GetComponent<Player>().isAlive = true;
                 }
                 player.transform.GetChild(0).gameObject.SetActive(true);
+                player.GetComponentInChildren<Renderer>().material = player.GetComponent<Player>().material;
             }
         }
         if (isServer) {
