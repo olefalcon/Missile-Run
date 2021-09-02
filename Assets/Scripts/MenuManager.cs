@@ -34,12 +34,20 @@ public class MenuManager : MonoBehaviour
     public Image hostMenu;
     public Image joinMenu;
     public Image settingsMenu;
+    public Image hostGameSlidersMenu;
     //Input fields
     public InputField hostIPField;
     public InputField hostNameField;
     public InputField joinIPField;
     public InputField joinNameField;
     public InputField devAuthField;
+    //Game Settings input fields
+    public InputField powerupSpawnTimeField;
+    public InputField pillarsField;
+    public InputField missileStartSpeedField;
+    public InputField missileSpeedGainField;
+    public InputField missileStartTurnRateField;
+    public InputField missileTurnRateGainField;
     //Network Manager
     public NewNetworkRoomManager nm;
     public EOSLobby eosLobby;
@@ -51,9 +59,11 @@ public class MenuManager : MonoBehaviour
         nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
         //if you have been at the menu once dont play intro things over and over again
         if (Globals.hasMenuOnce == true) {
+            Debug.Log("We've seen the pre menus before!");
             developerScreen.gameObject.SetActive(false);
             warningsScreen.gameObject.SetActive(false);
         } else {
+            Debug.Log("This is the first time seeing pre menus we shouldn't see them again");
             Globals.hasMenuOnce = true;
         }
         eosLobby = GameObject.Find("EOSManager").GetComponent<EOSLobby>();
@@ -82,6 +92,7 @@ public class MenuManager : MonoBehaviour
         if (nm.playerName == "") {
             assignEmptyName();
         }
+        nm.playerName = nm.playerName.Substring(0,12);
         NetworkManager.singleton.StartHost();
     }
     public void JoinGame()
@@ -90,6 +101,7 @@ public class MenuManager : MonoBehaviour
         if (nm.playerName == "") {
             assignEmptyName();
         }
+        nm.playerName = nm.playerName.Substring(0,12);
         NetworkManager.singleton.networkAddress = joinIPField.text;
         NetworkManager.singleton.StartClient();
     }
@@ -110,6 +122,29 @@ public class MenuManager : MonoBehaviour
     public void CopyId() {
         string id = hostIPField.text;
         id.CopyToClipboard();
+    }
+    public void HostGameSliders() {
+        powerupSpawnTimeField.text = Globals.powerupSpawnTime.ToString();
+        pillarsField.text = Globals.pillars.ToString();
+        missileStartSpeedField.text = Globals.missileStartSpeed.ToString();
+        missileSpeedGainField.text = Globals.missileSpeedGain.ToString();
+        missileStartTurnRateField.text = Globals.missileStartTurnRate.ToString();
+        missileTurnRateGainField.text = Globals.missileTurnRateGain.ToString();
+        hostGameSlidersMenu.gameObject.SetActive(true);
+    }
+    public void HostGameSlidersClose() {
+        try {
+            Globals.powerupSpawnTime = float.Parse(powerupSpawnTimeField.text);
+            Globals.pillars = int.Parse(pillarsField.text);
+            Globals.missileStartSpeed = float.Parse(missileStartSpeedField.text);
+            Globals.missileSpeedGain = float.Parse(missileSpeedGainField.text);
+            Globals.missileStartTurnRate = float.Parse(missileStartTurnRateField.text);
+            Globals.missileTurnRateGain = float.Parse(missileTurnRateGainField.text);
+            hostGameSlidersMenu.gameObject.SetActive(false);
+        } catch {
+            Debug.Log("Some settings are not formatted correctly");
+        }
+        
     }
     public void HostMenuClose() {
         hostMenu.gameObject.SetActive(false);

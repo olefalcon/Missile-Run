@@ -236,7 +236,7 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// <para>This could be because the room is full, or the connection is not allowed to have more players.</para>
     /// </summary>
     public override void OnRoomClientAddPlayerFailed() { }
-
+    /*
     public override void OnClientError(NetworkConnection conn, int errorCode) {
         errorPanel = GameObject.Find("ErrorScreen").GetComponent<Image>();
         errorText = GameObject.Find("ErrorText").GetComponent<Text>();
@@ -244,6 +244,7 @@ public class NewNetworkRoomManager : NetworkRoomManager
         errorText.text = "ERROR CODE " + errorCode.ToString();
         Debug.Log("ERROR CODE " + errorCode.ToString());
     }
+    */
 
     #endregion
 

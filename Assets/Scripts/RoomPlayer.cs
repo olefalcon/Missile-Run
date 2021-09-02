@@ -112,6 +112,7 @@ public class RoomPlayer : NetworkBehaviour
     //functions for when a player leaves
     [ClientRpc]
     public void playerLeave(int p, string name) {
+        Debug.Log("Player Index Number " + p.ToString() + " left!");
         --nm.players;
         switch(p) {
             case 1: //player 2 leaves
