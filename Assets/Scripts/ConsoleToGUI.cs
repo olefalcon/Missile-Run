@@ -7,10 +7,11 @@ public class ConsoleToGUI : MonoBehaviour
     string myLog = "*begin log";
     string filename = "";
     bool doShow = false;
+    public bool doFile = false;
     int kChars = 700;
     void OnEnable() { Application.logMessageReceived += Log; }
     void OnDisable() { Application.logMessageReceived -= Log; }
-    void Update() { if (Input.GetKeyDown(KeyCode.Space)) { doShow = !doShow; } }
+    void Update() { if (Input.GetKeyDown(KeyCode.Tilde)) { doShow = !doShow; } }
     public void Log(string logString, string stackTrace, LogType type)
     {
     // for onscreen...
@@ -18,10 +19,10 @@ public class ConsoleToGUI : MonoBehaviour
         if (myLog.Length > kChars) { myLog = myLog.Substring(myLog.Length - kChars); }
 
         // for the file ...
-        if (filename == "")
+        if (filename == "" && doFile)
         {
             string d = System.Environment.GetFolderPath(
-            System.Environment.SpecialFolder.Desktop) + "/MISSILE_RUN_LOGS";
+            System.Environment.SpecialFolder.MyDocuments) + "/Missile_Run" + "/logs";
             System.IO.Directory.CreateDirectory(d);
             string r = Random.Range(1000, 9999).ToString();
             filename = d + "/log-" + r + ".txt";

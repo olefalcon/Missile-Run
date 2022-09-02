@@ -10,7 +10,7 @@ public class Laser : MonoBehaviour
     void Update()
     {
         transform.Translate(Vector3.left * speed * Time.deltaTime);
-        if (transform.position.x <= -15) {
+        if (transform.position.x <= -30) {
             Destroy(gameObject);
         }
     }

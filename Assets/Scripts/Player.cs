@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ParticleSystemJobs;
+using DG.Tweening;
 
 public class Player : NetworkBehaviour
 {
@@ -23,8 +24,8 @@ public class Player : NetworkBehaviour
     public ParticleSystemRenderer psr;
     [SyncVar]
     public int pIndex;
-    //Private 
     public float speed;
+    public bool allowMove;
     //Materials for assignment
     public Material player1mat;
     public Material player2mat;
@@ -49,6 +50,7 @@ public class Player : NetworkBehaviour
         speed = baseSpeed;
         hasPowerupEffect = false;
         isAlive = true;
+        allowMove = false;
     }
 
     void Update()
@@ -116,6 +118,7 @@ public class Player : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (!allowMove) {return;}
         if (direction.magnitude >= 0.1f && isAlive)
         {
             transform.Translate(direction * speed * Time.deltaTime, Space.World);
@@ -155,6 +158,13 @@ public class Player : NetworkBehaviour
         gameObject.GetComponentInChildren<Renderer>().material = material;
         //is alive has to be set on the missile script because of delay
         //isAlive = false;
+        allowMove = false;
+        //Camera shake
+        if (isLocalPlayer) {
+            Camera cam = Camera.main;
+            Vector3 returnPos = cam.transform.position;
+            cam.DOShakePosition(0.5f, 1.5f, 10, 30f);
+        }
     }
     [Command]
     void DeterminePlayerIndex(int playerNum, string name) {

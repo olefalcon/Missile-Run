@@ -113,6 +113,7 @@ public class RoomPlayer : NetworkBehaviour
     [ClientRpc]
     public void playerLeave(int p, string name) {
         Debug.Log("Player Index Number " + p.ToString() + " left!");
+        nm = GameObject.Find("NetworkManager").GetComponent<NewNetworkRoomManager>();
         --nm.players;
         switch(p) {
             case 1: //player 2 leaves

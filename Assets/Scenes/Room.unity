@@ -2250,7 +2250,7 @@ AudioSource:
   m_GameObject: {fileID: 1351062353}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 0f80c6c677b3a8f49a6bd40f3773e848,
+  OutputAudioMixerGroup: {fileID: 1639058569266227621, guid: 0f80c6c677b3a8f49a6bd40f3773e848,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 6f7598fd9be46754da56bfeda462e1f3, type: 3}
   m_PlayOnAwake: 1
@@ -3530,7 +3530,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 7.17e-43, z: 0, w: -1}
+  m_BoundingSphereOverride: {x: 7.187e-42, y: 1.04e-43, z: 6.47e-43, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0

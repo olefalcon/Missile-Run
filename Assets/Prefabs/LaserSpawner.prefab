@@ -108,7 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   laserPrefab: {fileID: 5686599868955090766, guid: 93566eadcc902304583c529a647452f2,
     type: 3}
-  laserSpawnTime: 0.01
+  laserSpawnTime: 0.004
   minLaserSpeed: 6
   maxLaserSpeed: 20
   minLaserLength: 0.2

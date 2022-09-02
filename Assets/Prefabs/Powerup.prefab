@@ -300,11 +300,11 @@ MonoBehaviour:
   swapMat: {fileID: 2100000, guid: 2d16f61724b17b9458517260e8ec295e, type: 2}
   glitchMat: {fileID: 2100000, guid: f8ca23ae823a6994b9e469343e913313, type: 2}
   shieldMat: {fileID: 2100000, guid: 1218493e198edd84b99a0b740096966b, type: 2}
-  speedImage: {fileID: 2800000, guid: 434200b237eb43f41bd273897c963a20, type: 3}
-  invisImage: {fileID: 2800000, guid: cff15f322aa1fc44e87773acc674d8ac, type: 3}
-  swapImage: {fileID: 2800000, guid: db82632648c00014481e13ab5f5c4a41, type: 3}
-  glitchImage: {fileID: 2800000, guid: 4601c2e98887b6047918afbb0469e6ae, type: 3}
-  shieldImage: {fileID: 2800000, guid: 41a3fef35f135c444bce9311a37a889b, type: 3}
+  speedImage: {fileID: 2800000, guid: 4adb006e9f6a04a42b69795d5d26d0f3, type: 3}
+  invisImage: {fileID: 2800000, guid: 86717c1e8ce5cd1428b3eefe67251e74, type: 3}
+  swapImage: {fileID: 2800000, guid: dd8c7624a097c7441b23177a64fc87ab, type: 3}
+  glitchImage: {fileID: 2800000, guid: 1e019eb86d6e08643bc979501fae2180, type: 3}
+  shieldImage: {fileID: 2800000, guid: fb75a115087434347b65a55c9c0b8476, type: 3}
   rend: {fileID: 0}
   icon: {fileID: 7992667490134681181}
 --- !u!114 &1488603185313270147

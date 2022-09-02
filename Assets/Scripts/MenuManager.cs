@@ -48,6 +48,8 @@ public class MenuManager : MonoBehaviour
     public InputField missileSpeedGainField;
     public InputField missileStartTurnRateField;
     public InputField missileTurnRateGainField;
+    //Settings
+    public Toggle logsToggle;
     //Network Manager
     public NewNetworkRoomManager nm;
     public EOSLobby eosLobby;
@@ -111,6 +113,7 @@ public class MenuManager : MonoBehaviour
     }
     public void AcceptSettings() {
         PlayerPrefs.SetFloat("masterVol", volumeSlider.value);
+        nm.gameObject.GetComponent<ConsoleToGUI>().doFile = logsToggle;
         settingsMenu.gameObject.SetActive(false);
     }
     public void QuitGame() {

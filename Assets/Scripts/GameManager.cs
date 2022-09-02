@@ -20,6 +20,7 @@ public class GameManager : NetworkBehaviour
     public NewNetworkRoomManager nm;
     //Cam Data and Positions
     public Camera cam;
+    public Camera endCam;
     public Vector3 lobbyCameraPos;
     public Vector3 lobbyCameraRot;
     public Vector3 gameCameraPos;
@@ -74,6 +75,8 @@ public class GameManager : NetworkBehaviour
     public Material[] playerMaterials;
     public Material[] powerupMaterials;
     public GameObject missile;
+
+    public int musicIndex;
     // Start is called before the first frame update
     void Start()
     {
@@ -83,6 +86,7 @@ public class GameManager : NetworkBehaviour
         CompilePlayerSpawns();
         CompilePlayerMaterials();
         CompileIsPlayerAI();
+        musicIndex = 1;
         startDelayTimer = startDelay;
         //We will start the round when all clients are loaded in
         //StartRound();
@@ -118,6 +122,7 @@ public class GameManager : NetworkBehaviour
                 RestartRound();
             }
             endRoundTimer -= Time.deltaTime;
+            endCam.transform.Translate(-10f/endRoundTime*Time.deltaTime, 0f, 0f, transform);
             /*
             if (cam.orthographicSize >= camMaxZoom)
             {
@@ -151,6 +156,7 @@ public class GameManager : NetworkBehaviour
         if (loadingScreen.gameObject.activeInHierarchy) {
             loadingScreen.gameObject.SetActive(false);
         }
+        cam.DOOrthoSize(5f, 1.5f);
         if (!isServer) {return;}
         CreateMissile();
         int numPlayers = nm.numPlayers;
@@ -171,19 +177,19 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void EndRound(int winnerIndex)
     {
+        endCam.enabled = true;
+        cam.enabled = false;
+        cam.orthographicSize = 8f;
         isEndRound = true;
         endRoundTimer = endRoundTime;
-        //End of round cam
-        //cam.transform.position = new Vector3(missile.transform.position.x, 10f, missile.transform.position.z);
-        //cam.orthographicSize = camMaxZoom;
         if (winnerIndex == -1) {
             roundWinnerText.text = "Nobody won! LMAO";
         } else {
             string winnerColor = indexToColor(winnerIndex);
             roundWinnerText.text = winnerColor + " Wins!";
         }
-        roundWinnerBanner.transform.localPosition = new Vector3(181f, 0f, 0f);
-        am.StopMusic();
+        roundWinnerBanner.gameObject.SetActive(true);
+        am.FilterMusic();
         am.PlaySFX("roundEnd");
         //Score Handling
         Text winnerScoreText = player1ScoreText;
@@ -219,6 +225,9 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void RestartRound()
     {
+        cam.enabled = true;
+        endCam.enabled = false;
+        endCam.transform.position = new Vector3(2f, 7f, -1f);
         players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
@@ -253,7 +262,8 @@ public class GameManager : NetworkBehaviour
         isEndRound = false;
         //cam.orthographicSize = camNormZoom;
         //cam.transform.position = defaultCameraPos;
-        roundWinnerBanner.transform.localPosition = new Vector3(-1500f, 100f, 0f);
+        roundWinnerBanner.gameObject.SetActive(false);
+        am.StopMusic();
         if (isServer) {
             StartRound();
         }

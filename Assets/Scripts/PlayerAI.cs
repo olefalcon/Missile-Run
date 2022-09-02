@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PlayerAI : NetworkBehaviour
 {
-    public GameObject missile;
     public Vector3 targetLocation;
     public float speed = 2f;
     public GameManager gm;
@@ -15,7 +14,6 @@ public class PlayerAI : NetworkBehaviour
     void Start()
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-        missile = GameObject.Find("Missile");
         ChooseTargetLoc();
     }
 

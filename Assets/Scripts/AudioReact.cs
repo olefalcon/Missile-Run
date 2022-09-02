@@ -11,6 +11,7 @@ public class AudioReact : MonoBehaviour
     //Effects to react to
     public bool reactGrow;
     public bool reactRotate;
+    public bool reactScore;
 
     //Number of reaction loops (-1 for inf)
     public int reactionLoops;
@@ -33,6 +34,10 @@ public class AudioReact : MonoBehaviour
         if (reactGrow) {
             transform.DOScale(1.05f, 0.46875f).SetLoops(reactionLoops, LoopType.Restart).SetEase(Ease.OutQuint);
         }
+        if (reactScore) {
+            //transform.DOLocalMoveX(Random.Range(-9.5f, -8.5f), 0.46875f).SetLoops(reactionLoops, LoopType.Restart).SetEase(Ease.OutQuint);
+        }
     }
+
 
 }

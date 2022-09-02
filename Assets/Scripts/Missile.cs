@@ -9,6 +9,7 @@ public class Missile : NetworkBehaviour
     public float startDelay;
     private float startDelayTimer;
     public GameObject gameManager;
+    public GameManager gm;
     public Material missileMat;
     public float speed;
     public float acceleration;
@@ -31,21 +32,30 @@ public class Missile : NetworkBehaviour
     private Vector3 oldDirection;
     private Vector3 direction;
     private float closestDist;
+    private int musicIndex;
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameObject.Find("GameManager");
         am = GameObject.Find("AudioManager").GetComponent<AudioManager>();
-        GameManager gameManagerScript = gameManager.GetComponent<GameManager>();
+        gm = gameManager.GetComponent<GameManager>();
         direction = Vector3.zero;
         state = 2;
         startDelayTimer = startDelay;
         players = GameObject.FindGameObjectsWithTag("Player");
+        musicIndex = gm.musicIndex;
     }
     [ClientRpc]
-    public void MusicRpc() {
-        am.PlaySFX("music");
+    public void MusicRpc(int track) {
+        Debug.Log("Track =" + track);
+        am.PlayMusic(track);
+    }
+    [ClientRpc]
+    public void ReleasePlayers() {
+        foreach (GameObject player in players) {
+            player.GetComponent<Player>().allowMove = true;
+        }
     }
     // Update is called once per frame
     void Update()
@@ -55,6 +65,7 @@ public class Missile : NetworkBehaviour
             if (startDelayTimer <= 0)
             {
                 players = GameObject.FindGameObjectsWithTag("Player");
+                ReleasePlayers();
                 int startTarget = Random.Range(0,players.Length);
                 target = players[startTarget];
                 FindTarget();
@@ -62,7 +73,10 @@ public class Missile : NetworkBehaviour
                 direction = target.transform.position - transform.position;
                 state = 1;
                 if (isServer) {
-                    MusicRpc();
+                    gm.musicIndex = Random.Range(1,11);
+                    musicIndex = gm.musicIndex;
+                    Debug.Log(" Music Index = " + musicIndex);
+                    MusicRpc(musicIndex);
                 }
             } else
             {
@@ -207,6 +221,7 @@ public class Missile : NetworkBehaviour
         }
     }
     private bool isAlivePlayer() {
+        players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players) {
             if (player.GetComponent<Player>().isAlive) {
                 return true;

@@ -214,6 +214,7 @@ public class NewNetworkRoomManager : NetworkRoomManager
     /// <param name="conn">The connection that disconnected.</param>
     public override void OnClientDisconnect(NetworkConnection conn) {
         Debug.Log("Client has lost connection to Server! ...OnRoomClientDisconnect()");
+        StopHost();
         StopClient();
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
